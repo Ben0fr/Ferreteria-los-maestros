@@ -1,0 +1,24 @@
+
+/*color de los botones principales a naranjo*/
+.btn-primary {
+    background-color: #e85d04;
+    border-color: #e85d04;
+}
+
+/*color un poco más oscuro cuando el mouse pasa por encima del botón*/
+.btn-primary:hover {
+    background-color: #c24c02;
+    border-color: #c24c02;
+}
+
+/*el nombre de la ferretería en el menú también queda naranjo*/
+.navbar-brand {
+    color: #e85d04;
+    font-weight: bold;
+}
+
+/*un poco de espacio abajo de cada tarjeta para que no queden pegadas */
+.card {
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
