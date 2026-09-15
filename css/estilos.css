@@ -1,21 +1,28 @@
+/* ============================================
+   Estilos de Ferretería Los Maestros
+   Este archivo es corto a propósito: solo
+   cambiamos colores y algunos márgenes,
+   el resto lo hace Bootstrap.
+   ============================================ */
 
-/*color de los botones principales a naranjo*/
+/* Cambiamos el color de los botones principales a naranjo */
 .btn-primary {
     background-color: #e85d04;
     border-color: #e85d04;
 }
 
-/*color un poco más oscuro cuando el mouse pasa por encima del botón*/
+/* Color un poco más oscuro cuando el mouse pasa por encima del botón */
 .btn-primary:hover {
     background-color: #c24c02;
     border-color: #c24c02;
 }
 
-/*el nombre de la ferretería en el menú también queda naranjo*/
+/* El nombre de la ferretería en el menú también queda naranjo */
 .navbar-brand {
     color: #e85d04;
     font-weight: bold;
 }
+
 
 /*Un poco de espacio abajo de cada tarjeta para que no queden pegadas */
 .card {
@@ -68,4 +75,15 @@
     font-weight: bold;
     color: #d39e00;
     font-size: 1.5rem;
+}
+
+/* Fondo claro para la sección Hero de la página principal */
+.hero-ferreteria {
+    background-color: #fdece0;
+}
+
+/* Fondo oscuro para el cartel final de la página principal */
+.cta-ferreteria {
+    background-color: #23262b;
+    color: #ffffff;
 }

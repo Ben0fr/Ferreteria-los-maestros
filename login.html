@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - Ferretería Los Maestros</title>
+    <title>Iniciar Sesión - Ferretería Los Maestros</title>
 
     <!-- Bootstrap 5 (CSS) desde el CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<!-- Aquí empieza el menú (el mismo que en index.html) -->
+<!-- Aquí empieza el menú (el mismo que en las otras páginas) -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="index.html">Ferretería Los Maestros</a>
@@ -28,7 +28,7 @@
                     <a class="nav-link" href="index.html">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="productos.html">Productos</a>
+                    <a class="nav-link" href="productos.html">Productos</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="nosotros.html">Nosotros</a>
@@ -62,17 +62,45 @@
 <!-- Aquí termina el menú -->
 
 
-<!-- Aquí empieza el catálogo de productos -->
+<!-- Aquí empieza el formulario de inicio de sesión -->
 <div class="container mt-5 mb-5">
-    <h1 class="mb-1">Catálogo de Productos</h1>
-    <!-- Acá JavaScript escribe qué categoría se está mostrando, si viene una en la URL -->
-    <p id="categoria-actual" class="text-body-secondary mb-4"></p>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="mb-4 text-center">Iniciar Sesión</h1>
 
-    <!-- Este div está vacío a propósito: aquí vamos a inyectar los productos con JavaScript -->
-    <div class="row" id="contenedor-productos">
+                    <!-- Cuando se envía el formulario, se llama a la función validarLogin() -->
+                    <form onsubmit="return validarLogin()">
+
+                        <!-- Campo de correo -->
+                        <div class="mb-3">
+                            <label for="login-email" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="login-email">
+                            <!-- Acá JavaScript va a escribir el mensaje de error si el correo no es válido -->
+                            <div class="text-danger" id="error-login-email"></div>
+                        </div>
+
+                        <!-- Campo de contraseña -->
+                        <div class="mb-3">
+                            <label for="login-password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="login-password">
+                            <!-- Acá JavaScript va a escribir el mensaje de error si la contraseña no es válida -->
+                            <div class="text-danger" id="error-login-password"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+                    </form>
+
+                    <p class="text-center mt-3">
+                        ¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<!-- Aquí termina el catálogo de productos -->
+<!-- Aquí termina el formulario de inicio de sesión -->
 
 
 <!-- Bootstrap 5 (JS) -->
