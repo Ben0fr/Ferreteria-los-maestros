@@ -1,11 +1,8 @@
 // ==========================================================
 // app.js - Ferretería Los Maestros
-// Acá guardamos la lista de productos y las funciones
-// que arman el catálogo y manejan el carrito de compras.
+// Catálogo de productos, carrito de compras y usuarios.
 // ==========================================================
 
-// Arreglo con los productos de la ferretería (usamos emojis como ícono
-// porque todavía no tenemos fotos reales de los productos)
 const productos = [
     { id: 1, codigo: "MAR001", nombre: "Martillo Carpintero",        categoria: "Herramientas manuales",     categoriaSlug: "manuales",     precio: 6990,  stock: 25, icono: "🔨" },
     { id: 2, codigo: "TAL002", nombre: "Taladro Percutor 650W",      categoria: "Herramientas eléctricas",   categoriaSlug: "electricas",   precio: 39990, stock: 12, icono: "🔌" },
@@ -15,26 +12,19 @@ const productos = [
     { id: 6, codigo: "TOR006", nombre: "Caja de Tornillos (100 un.)", categoria: "Ferretería general",        categoriaSlug: "general",      precio: 2490,  stock: 50, icono: "🔩" }
 ];
 
-
 // ----------------------------------------------------------
-// Esta función arma las cards de Bootstrap con los productos
-// y las mete dentro del div "contenedor-productos" de productos.html
+// Muestra las cards de productos en productos.html
 // ----------------------------------------------------------
 function mostrarProductos() {
     const contenedor = document.getElementById("contenedor-productos");
 
-    // Si estamos en una página que no tiene ese div, no hacemos nada
     if (contenedor === null) {
         return;
     }
 
-    // Leemos la categoría desde la URL, por ejemplo:
-    // productos.html?categoria=electricas
     const parametros = new URLSearchParams(window.location.search);
     const categoriaFiltro = parametros.get("categoria");
 
-    // Armamos la lista de productos a mostrar: todos, o solo los
-    // de la categoría que venía en la URL
     let productosAMostrar = [];
 
     for (let i = 0; i < productos.length; i++) {
@@ -43,7 +33,6 @@ function mostrarProductos() {
         }
     }
 
-    // Si hay un texto para avisar qué categoría se está mostrando, lo actualizamos
     const tituloCategoria = document.getElementById("categoria-actual");
 
     if (tituloCategoria !== null) {
@@ -63,14 +52,16 @@ function mostrarProductos() {
 
         html += `
       <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <div class="fs-1 text-center">${p.icono}</div>
-            <h5 class="card-title">${p.nombre}</h5>
-            <p class="card-text">Categoría: ${p.categoria}</p>
-            <p class="card-text">Precio: $${p.precio}</p>
-            <p class="card-text">Stock: ${p.stock} unidades</p>
-            <button type="button" class="btn btn-primary" onclick="agregarAlCarrito(${p.id})">
+        <div class="card h-100">
+          <div class="card-body text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="fs-1 mb-2">${p.icono}</div>
+              <h5 class="card-title">${p.nombre}</h5>
+              <p class="card-text mb-1">Categoría: ${p.categoria}</p>
+              <p class="card-text mb-1 fw-bold">Precio: $${p.precio}</p>
+              <p class="card-text text-muted mb-3">Stock: ${p.stock} unidades</p>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="agregarAlCarrito(${p.id})">
               Agregar al carrito
             </button>
           </div>
@@ -82,10 +73,8 @@ function mostrarProductos() {
     contenedor.innerHTML = html;
 }
 
-
 // ----------------------------------------------------------
-// Busca un producto dentro del arreglo "productos" usando su id.
-// Si no lo encuentra, devuelve null.
+// Búsqueda y gestión del Carrito de Compras
 // ----------------------------------------------------------
 function buscarProductoPorId(id) {
     for (let i = 0; i < productos.length; i++) {
@@ -96,12 +85,6 @@ function buscarProductoPorId(id) {
     return null;
 }
 
-
-// ----------------------------------------------------------
-// Agrega un producto al carrito.
-// El carrito se guarda en localStorage para que no se borre
-// si la persona recarga la página o la cierra y vuelve después.
-// ----------------------------------------------------------
 function agregarAlCarrito(id) {
     let carritoGuardado = localStorage.getItem("carritoFerreteria");
     let carrito = [];
@@ -110,7 +93,6 @@ function agregarAlCarrito(id) {
         carrito = JSON.parse(carritoGuardado);
     }
 
-    // Revisamos si el producto ya estaba en el carrito
     let yaExiste = false;
 
     for (let i = 0; i < carrito.length; i++) {
@@ -120,21 +102,14 @@ function agregarAlCarrito(id) {
         }
     }
 
-    // Si no estaba, lo agregamos con cantidad 1
     if (yaExiste === false) {
         carrito.push({ id: id, cantidad: 1 });
     }
 
     localStorage.setItem("carritoFerreteria", JSON.stringify(carrito));
-
     alert("Producto agregado al carrito");
 }
 
-
-// ----------------------------------------------------------
-// Quita un producto del carrito por completo y vuelve a
-// mostrar el carrito actualizado en pantalla.
-// ----------------------------------------------------------
 function eliminarDelCarrito(id) {
     let carritoGuardado = localStorage.getItem("carritoFerreteria");
     let carrito = [];
@@ -152,14 +127,9 @@ function eliminarDelCarrito(id) {
     }
 
     localStorage.setItem("carritoFerreteria", JSON.stringify(carritoNuevo));
-
     mostrarCarrito();
 }
 
-
-// ----------------------------------------------------------
-// Actualiza el número de total que se muestra en carrito.html
-// ----------------------------------------------------------
 function actualizarTotal(total) {
     const totalTexto = document.getElementById("total-carrito");
 
@@ -168,16 +138,9 @@ function actualizarTotal(total) {
     }
 }
 
-
-// ----------------------------------------------------------
-// Esta función lee el carrito desde localStorage, busca los
-// datos de cada producto y arma las cards dentro del div
-// "contenedor-carrito" de carrito.html. También calcula el total.
-// ----------------------------------------------------------
 function mostrarCarrito() {
     const contenedor = document.getElementById("contenedor-carrito");
 
-    // Si estamos en una página que no tiene ese div, no hacemos nada
     if (contenedor === null) {
         return;
     }
@@ -189,9 +152,8 @@ function mostrarCarrito() {
         carrito = JSON.parse(carritoGuardado);
     }
 
-    // Si el carrito está vacío, mostramos un mensaje y salimos
     if (carrito.length === 0) {
-        contenedor.innerHTML = "<p>Tu carrito está vacío. <a href='productos.html'>Ver productos</a></p>";
+        contenedor.innerHTML = "<p class='col-12 text-center'>Tu carrito está vacío. <a href='productos.html'>Ver productos</a></p>";
         actualizarTotal(0);
         return;
     }
@@ -203,7 +165,6 @@ function mostrarCarrito() {
         const item = carrito[i];
         const producto = buscarProductoPorId(item.id);
 
-        // Por si el producto ya no existe en el arreglo, lo saltamos
         if (producto === null) {
             continue;
         }
@@ -212,15 +173,17 @@ function mostrarCarrito() {
         total = total + subtotal;
 
         html += `
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <div class="fs-1 text-center">${producto.icono}</div>
-            <h5 class="card-title">${producto.nombre}</h5>
-            <p class="card-text">Precio: $${producto.precio}</p>
-            <p class="card-text">Cantidad: ${item.cantidad}</p>
-            <p class="card-text">Subtotal: $${subtotal}</p>
-            <button type="button" class="btn btn-primary" onclick="eliminarDelCarrito(${producto.id})">
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="fs-1 mb-2">${producto.icono}</div>
+              <h5 class="card-title">${producto.nombre}</h5>
+              <p class="card-text mb-1">Precio: $${producto.precio}</p>
+              <p class="card-text mb-1">Cantidad: ${item.cantidad}</p>
+              <p class="card-text fw-bold">Subtotal: $${subtotal}</p>
+            </div>
+            <button type="button" class="btn btn-danger w-100 mt-2" onclick="eliminarDelCarrito(${producto.id})">
               Quitar del carrito
             </button>
           </div>
@@ -233,9 +196,8 @@ function mostrarCarrito() {
     actualizarTotal(total);
 }
 
-
 // ----------------------------------------------------------
-// Revisa que el correo termine en uno de los dominios permitidos
+// Validaciones y gestión de usuarios
 // ----------------------------------------------------------
 function validarCorreo(correo) {
     if (correo.endsWith("@duoc.cl") || correo.endsWith("@profesor.duoc.cl") || correo.endsWith("@gmail.com")) {
@@ -244,12 +206,6 @@ function validarCorreo(correo) {
     return false;
 }
 
-
-// ----------------------------------------------------------
-// Busca, dentro de los usuarios registrados en localStorage,
-// uno que tenga ese correo y esa clave. Si no lo encuentra,
-// devuelve null.
-// ----------------------------------------------------------
 function buscarUsuario(correo, clave) {
     let usuariosGuardados = localStorage.getItem("usuariosFerreteria");
     let usuarios = [];
@@ -267,12 +223,6 @@ function buscarUsuario(correo, clave) {
     return null;
 }
 
-
-// ----------------------------------------------------------
-// Valida el formulario de login.html.
-// Si algo está mal, escribe el mensaje de error bajo el campo
-// correspondiente y no deja enviar el formulario (return false).
-// ----------------------------------------------------------
 function validarLogin() {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
@@ -280,7 +230,6 @@ function validarLogin() {
     const errorEmail = document.getElementById("error-login-email");
     const errorPassword = document.getElementById("error-login-password");
 
-    // Limpiamos los mensajes de error anteriores
     errorEmail.textContent = "";
     errorPassword.textContent = "";
 
@@ -300,7 +249,6 @@ function validarLogin() {
         return false;
     }
 
-    // Buscamos si existe una cuenta registrada con ese correo y esa contraseña
     const usuario = buscarUsuario(email, password);
 
     if (usuario === null) {
@@ -308,7 +256,6 @@ function validarLogin() {
         return false;
     }
 
-    // Guardamos quién inició sesión, para poder mostrar su nombre en el menú
     localStorage.setItem("usuarioActualFerreteria", JSON.stringify(usuario));
 
     alert("Bienvenido, " + usuario.nombre);
@@ -316,12 +263,6 @@ function validarLogin() {
     return false;
 }
 
-
-// ----------------------------------------------------------
-// Valida el formulario de registro.html.
-// Revisa nombre, correo, contraseña y que las dos contraseñas
-// sean iguales.
-// ----------------------------------------------------------
 function validarRegistro() {
     const nombre = document.getElementById("registro-nombre").value;
     const email = document.getElementById("registro-email").value;
@@ -333,7 +274,6 @@ function validarRegistro() {
     const errorPassword = document.getElementById("error-registro-password");
     const errorPassword2 = document.getElementById("error-registro-password2");
 
-    // Limpiamos los mensajes de error anteriores
     errorNombre.textContent = "";
     errorEmail.textContent = "";
     errorPassword.textContent = "";
@@ -365,7 +305,6 @@ function validarRegistro() {
         return false;
     }
 
-    // Guardamos la nueva cuenta en la lista de usuarios registrados
     let usuariosGuardados = localStorage.getItem("usuariosFerreteria");
     let usuarios = [];
 
@@ -376,19 +315,13 @@ function validarRegistro() {
     usuarios.push({ nombre: nombre, correo: email, clave: password });
     localStorage.setItem("usuariosFerreteria", JSON.stringify(usuarios));
 
-    // Como no tenemos backend, solo mostramos un mensaje y
-    // mandamos a la persona a login.html para que inicie sesión
-    // con la cuenta que acaba de crear
     alert("Cuenta creada con éxito. Ahora inicia sesión.");
     window.location.href = "login.html";
     return false;
 }
 
-
 // ----------------------------------------------------------
-// Revisa si hay una sesión guardada y cambia el menú:
-// si hay alguien conectado, muestra su nombre y el botón de
-// "Cerrar sesión" en vez de "Iniciar Sesión" / "Registrarse".
+// Gestión del Menú según Estado de Sesión
 // ----------------------------------------------------------
 function actualizarMenuUsuario() {
     const navLogin = document.getElementById("nav-login");
@@ -397,7 +330,6 @@ function actualizarMenuUsuario() {
     const navUsuarioNombre = document.getElementById("nav-usuario-nombre");
     const navLogout = document.getElementById("nav-logout");
 
-    // Si el menú de esta página no tiene estos elementos, no hacemos nada
     if (navLogin === null || navRegistro === null || navUsuario === null || navLogout === null) {
         return;
     }
@@ -405,15 +337,15 @@ function actualizarMenuUsuario() {
     const usuarioGuardado = localStorage.getItem("usuarioActualFerreteria");
 
     if (usuarioGuardado === null) {
-        // Nadie ha iniciado sesión: mostramos los botones de siempre
         navLogin.classList.remove("d-none");
         navRegistro.classList.remove("d-none");
         navUsuario.classList.add("d-none");
         navLogout.classList.add("d-none");
     } else {
-        // Alguien inició sesión: mostramos su nombre y "Cerrar sesión"
         const usuario = JSON.parse(usuarioGuardado);
-        navUsuarioNombre.textContent = "Hola, " + usuario.nombre;
+        if (navUsuarioNombre !== null) {
+            navUsuarioNombre.textContent = "Hola, " + usuario.nombre;
+        }
 
         navLogin.classList.add("d-none");
         navRegistro.classList.add("d-none");
@@ -422,20 +354,13 @@ function actualizarMenuUsuario() {
     }
 }
 
-
-// ----------------------------------------------------------
-// Cierra la sesión: borra al usuario guardado y vuelve al inicio
-// ----------------------------------------------------------
 function cerrarSesion() {
     localStorage.removeItem("usuarioActualFerreteria");
     window.location.href = "index.html";
 }
 
-
 // ----------------------------------------------------------
-// Estas líneas se ejecutan apenas se carga la página.
-// Cada función se sale sola si el elemento que necesita no
-// existe, así que no hay problema en llamarlas en todas las páginas.
+// Inicialización
 // ----------------------------------------------------------
 mostrarProductos();
 mostrarCarrito();
