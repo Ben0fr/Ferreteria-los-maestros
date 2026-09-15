@@ -40,6 +40,9 @@ function mostrarProductos() {
             <p class="card-text">Categoría: ${p.categoria}</p>
             <p class="card-text">Precio: $${p.precio}</p>
             <p class="card-text">Stock: ${p.stock} unidades</p>
+            <a href="detalle-producto.html?id=${p.id}" class="btn btn-outline-secondary">
+            Ver detalle
+            </a>
             <button type="button" class="btn btn-primary" onclick="agregarAlCarrito(${p.id})">
               Agregar al carrito
             </button>
@@ -86,6 +89,148 @@ function agregarAlCarrito(id) {
     alert("Producto agregado al carrito");
 }
 
+//muestra en detalle-producto.html la información del producto 
+//seleccionado desde productos.html
+function mostrarDetalleProducto() {
+    //Busca el contenedor donde se mostrará el detalle del producto
+    const contenedor = document.getElementById("detalle-producto");
+    //Si la pagina no tiene el contenedor (como index.html o productos.html) no hace nada
+    if (contenedor === null) {
+        return;
+    }
+    //Obtiene los parametros de la URL
+    const parametros = new URLSearchParams(window.location.search);
+    //Obtiene el id del producto que viene en la URL
+    const id = parametros.get("id");
+    let productoEncontrado = null;
+    //recorre el arreglo de productos buscando el producto que tenga el mismo id que vino en la URL
+    for(let i = 0; i < productos.length; i++) {
+        if(productos[i].id == id) {
+            productoEncontrado = productos[i];
+        }
+
+}
+//Si no encontró el producto, muestra un mensaje de error
+if(productoEncontrado === null) {
+    contenedor.innerHTML = "<div class='alert alert-danger'>Producto no encontrado</div>";
+    return;
+
+}
+//Si encuentra el producto, muestra su información 
+//dentro del div con id "detalle-producto"
+contenedor.innerHTML = `
+<div class="card">
+    <div class="card-body">
+        <div class="fs-1 text-center">${productoEncontrado.icono}</div>
+        <h2 class="card-title">${productoEncontrado.nombre}</h2>
+        <p> codigo: ${productoEncontrado.codigo}</p>
+        <p> categoria: ${productoEncontrado.categoria}</p>
+        <p> precio: $${productoEncontrado.precio}</p>
+        <p> stock: ${productoEncontrado.stock} unidades</p>
+        <button type="button" class="btn btn-primary" onclick="agregarAlCarrito(${productoEncontrado.id})">
+            Agregar al carrito
+        </button>
+
+        <a href="productos.html" class="btn btn-secondary">Volver al catálogo</a>
+    </div>
+</div>
+`;
+
+}
+
+//Muestra los productos guardados en el carrito 
+//Los datos del carrito se recuperan desde localStorage
+function mostrarCarrito() {
+    //Busca el contenedor donde se mostrará el carrito
+    const contenedor = document.getElementById("contenedor-carrito");
+    //Si no estamos en la página carrito.html (que es la única que tiene el contenedor) no hace nada
+    if(contenedor === null) {
+        return;
+    }
+    //Busca en LocalStorage si hay un carrito guardado. Si no hay, parte con un arreglo vacío
+    let carritoGuardado = localStorage.getItem("carritoFerreteria");
+    //Se crea inicialmente un arreglo vacío para el carrito
+    let carrito = [];
+    //Si existe un carrito guardado, JSON.parse lo convierte de texto a un arreglo de objetos y lo guarda en la variable carrito
+    if (carritoGuardado !== null) {
+        carrito = JSON.parse(carritoGuardado);
+    }
+    //Si el carrito está vacío, muestra un mensaje y termina la función
+    if(carrito.length === 0) {
+        contenedor.innerHTML = "<div class='alert alert-info'>El carrito está vacío</div>";
+        document.getElementById("total-carrito").textContent = "0";
+        return;
+    }
+    //Aqui se ira construyendo el HTML que muestra los productos del carrito
+    let html = "";
+    //Variable que acumula el total del carrito
+    let total = 0;
+    //Recorre cada producto guardado en el carrito
+    for(let i = 0; i < carrito.length; i++) {
+        let producto = null;
+        //Busca la informacion completa del producto
+        //dentro del arreglo principal "productos"
+        for(let j = 0; j < productos.length; j++) {
+            if(productos[j].id === carrito[i].id) {
+                producto = productos[j];
+            }
+        }
+        //Si encuentra el producto, calcula el subtotal y lo agrega al total
+        if (producto !== null) {
+            const subtotal = producto.precio * carrito[i].cantidad;
+            //Suma el subtotal al total del carrito
+            total = total + subtotal;
+            html += `
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5>
+                    ${producto.icono}
+                    ${producto.nombre}
+                    </h5>
+                    <p>Precio: $${producto.precio}</p>
+                    <p>Cantidad: ${carrito[i].cantidad}</p>
+                    <p>Subtotal: $${subtotal}</p>
+                    <button class ="btn btn-danger" onclick="eliminarDelCarrito(${producto.id})">Eliminar</button>
+                </div>
+            </div>
+            `;
+        }
+    }
+    //Muestra todas las tarjetas de los productos del carrito dentro del contenedor
+    contenedor.innerHTML = html;
+    //Muestra el total del carrito en el elemento con id "total-carrito"
+    document.getElementById("total-carrito").textContent = total;
+}
+
+//Elimina del carrito el producto que tenga el id que se pasa como parámetro
+function eliminarDelCarrito(id) {
+    //Recupera el carrito desde localStorage. Si no existe, parte con un arreglo vacío
+    let carrito=JSON.parse(localStorage.getItem("carritoFerreteria")) || [];
+    //Aqui se guardaran solamente los productos que queremos conservar 
+    let nuevoCarrito = [];
+    //Recorre todos los elementos del carrito
+    for(let i = 0; i < carrito.length; i++) {
+        //Si el id del producto no coincide con el que queremos eliminar, lo agregamos al nuevo carrito
+        if(carrito[i].id !== id) {
+            nuevoCarrito.push(carrito[i]);
+        }
+    }
+    //Guarda el nuevo carrito en localStorage, reemplazando al anterior
+    localStorage.setItem("carritoFerreteria", JSON.stringify(nuevoCarrito));
+    //Actualiza inmediatamente la vista del carrito para reflejar los cambios
+    mostrarCarrito();
+}
+//Elimina todos los productos del carrito
+//y actualiza la vista del carrito para reflejar los cambios
+function vaciarCarrito() {
+    //Borra el carrito completo de localStorage
+    localStorage.removeItem("carritoFerreteria");
+    //Actualiza la vista del carrito para reflejar que ahora está vacío
+    mostrarCarrito();
+}
+
 //Apenas se carga la página mostramos los productos
 //(esta línea va al final porque el script se carga después del HTML)
 mostrarProductos();
+mostrarDetalleProducto();
+mostrarCarrito();

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Permite que la página se adapte a diferentes tamaños de pantalla -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto - Ferretería Los Maestros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <!-- Barra de navegación principal -->
+    <nav class ="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <!-- Al presionar el nombre de la tienda vuelve al inicio -->
+            <a class="navbar-brand" href="index.html">
+                Ferretería Los Maestros
+            </a>
+            <!-- Este boton aparece cuando la pantalla es pequeña -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Opciones de navegación -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="productos.html">Productos</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="carrito.html">Carrito</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    <!-- Contenido principal de la pagina -->
+    <main class="container mt-5 mb-5">
+        <h1 class="mb-4">Detalle del Producto</h1>
+
+        <!-- En este div java script mostrara el detalle del producto 
+            app.js obtiene el id y busca el producto correspondiente dentro del arreglo de productos -->
+        <div id="detalle-producto">
+        </div>
+        
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js " integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsiF" crossorigin="anonymous"></script>
+    <script src="js/app.js"></script>
+    
+</body>
+</html>

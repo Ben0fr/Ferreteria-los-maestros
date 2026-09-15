@@ -17,8 +17,55 @@
     font-weight: bold;
 }
 
-/*un poco de espacio abajo de cada tarjeta para que no queden pegadas */
+/*Un poco de espacio abajo de cada tarjeta para que no queden pegadas */
 .card {
     margin-bottom: 15px;
     margin-top: 15px;
+}
+
+/*Estilo de las tarjetas que muestran los productos del carrito*/
+#contenedor-carrito .card{
+    border:none;
+    border-left: 5px solid #ffc107;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+/*espacio dentro de la tarjeta del carrito*/
+#contenedor-carrito .card-body{
+    padding: 20px;
+}
+/*Estilo de el nombre del producto dentro de la tarjeta del carrito*/
+#contenedor-carrito h5{
+    font-weight: bold;
+    color: #212529;
+}
+
+/*Hace mas visible el texto del boton rojo*/
+.btn-danger{
+    font-weight: bold;
+}
+
+/*Estilo de la tarjeta que muestra el resumen del carrito*/
+.resumen-carrito{
+    border:none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/*Alinea el contenido de la tarjeta del resumen del carrito a la derecha*/
+.resumen-carrito .card-body{
+    text-align: right;
+}
+
+/*Estilo del título de la tarjeta del total del carrito*/
+.resumen-carrito h3{
+    font-weight: bold;
+    color: #212529;
+}
+
+/*destaca el valor total de la compra*/
+#total-carrito{
+    font-weight: bold;
+    color: #d39e00;
+    font-size: 1.5rem;
 }
