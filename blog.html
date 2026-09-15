@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Ferretería Los Maestros</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            
+            <a class="navbar-brand" href="index.html">Ferretería Los Maestros</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="productos.html">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="nosotros.html">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacto.html">Contacto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="carrito.html">Carrito</a>
+                    </li>
+                    <li class="nav-item ms-lg-2" id="nav-login">
+                        <a class="btn btn-outline-primary btn-sm" href="login.html">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0" id="nav-registro">
+                        <a class="btn btn-primary btn-sm" href="registro.html">Registrarse</a>
+                    </li>
+                    <li class="nav-item ms-lg-3 d-none" id="nav-usuario">
+                        <span class="fw-bold" id="nav-usuario-nombre"></span>
+                    </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0 d-none" id="nav-logout">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cerrarSesion()">Cerrar sesión</button>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-ferreteria mb-5">
+        <div class ="container py-5 texte center">
+            <h1 class="display-5 fw-bold">Blog Ferretería Los Maestros</h1>
+            <p class="fs-5"> Descubre consejos, datos útiles y recomendaciones para tus proyectos</p>
+        </div>
+
+    </div>
+
+    <main class="container mb-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class ="card h-100">
+                     <img
+                    src="img/images.jpg"
+                    class="card-img-top"
+                    alt="Herramientas y seguridad"
+                >
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">5 Herramientas de Seguridad para trabajar en casa</h5>
+                    <p class="card-text">Conoce los elementos básicos que debes utilizar antes
+                        de comenzar cualquier trabajo de construcción,
+                        reparación o mantenimiento.</p>
+                        <a href="detalle-blog-1.html"
+                            class="btn btn-primary mt-auto">Leer más</a>
+                            
+                        </a>
+                </div>
+
+                </div>
+            </div>
+        <div class="col-md-6">
+            <div class ="card h-100">
+                <img
+                    src="img/blog2.jpg"
+                    class="card-img-top"
+                    alt="Herramientas básicas"
+                >
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Herramientas Básicas para tu Hogar</h5>
+                    <p class="card-text">Un martillo, destornilladores y algunas herramientas
+                        simples pueden ayudarte a solucionar muchas
+                        reparaciones domésticas.</p>
+                    <a href="detalle-blog-2.html" class="btn btn-primary mt-auto">Leer más</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+</script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

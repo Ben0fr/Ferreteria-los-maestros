@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Administrar Usuarios - Ferretería Los Maestros
+    </title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- CSS del proyecto -->
+    <link
+        rel="stylesheet"
+        href="css/estilos.css"
+    >
+</head>
+
+
+<body>
+
+<div class="container-fluid">
+
+    <div class="row min-vh-100">
+
+
+        <!-- Menú lateral -->
+        <aside
+            class="col-md-3 col-lg-2 bg-dark text-white p-4"
+        >
+
+            <h4 class="mb-4">
+                Ferretería<br>
+                Los Maestros
+            </h4>
+
+            <h6 class="text-secondary">
+                Administración
+            </h6>
+
+
+            <nav class="nav flex-column">
+
+                <a
+                    class="nav-link text-white"
+                    href="admin.html"
+                >
+                    Inicio
+                </a>
+
+                <a
+                    class="nav-link text-white"
+                    href="admin-productos.html"
+                >
+                    Productos
+                </a>
+
+                <a
+                    class="nav-link text-warning"
+                    href="admin-usuarios.html"
+                >
+                    Usuarios
+                </a>
+
+                <hr>
+
+                <a
+                    class="nav-link text-white"
+                    href="index.html"
+                >
+                    Volver a la tienda
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+
+        <!-- Contenido -->
+        <main
+            class="col-md-9 col-lg-10 p-4"
+        >
+
+
+            <!-- Título -->
+            <div
+                class="d-flex justify-content-between align-items-center mb-4"
+            >
+
+                <div>
+
+                    <h1>
+                        Administrar Usuarios
+                    </h1>
+
+                    <p class="text-muted">
+                        Listado de usuarios registrados en el sistema.
+                    </p>
+
+                </div>
+
+
+                <!-- Botón para mostrar formulario -->
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#formUsuario"
+                >
+                    Nuevo usuario
+                </button>
+
+            </div>
+
+
+
+            <!-- ==================================================
+                 FORMULARIO NUEVO USUARIO
+            ================================================== -->
+
+            <div
+                class="collapse mb-5"
+                id="formUsuario"
+            >
+
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <h4 class="mb-4">
+                            Nuevo Usuario
+                        </h4>
+
+
+                        <form
+                            id="formulario-usuario-admin"
+                            onsubmit="return guardarUsuarioAdmin()"
+                        >
+
+
+                            <!-- RUN, nombre y apellidos -->
+                            <div class="row">
+
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label
+                                        for="admin-usuario-run"
+                                        class="form-label"
+                                    >
+                                        RUN
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="admin-usuario-run"
+                                        minlength="7"
+                                        maxlength="9"
+                                        placeholder="19011022K"
+                                        required
+                                    >
+
+                                    <div class="form-text">
+                                        Sin puntos ni guion.
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label
+                                        for="admin-usuario-nombre"
+                                        class="form-label"
+                                    >
+                                        Nombre
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="admin-usuario-nombre"
+                                        maxlength="50"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label
+                                        for="admin-usuario-apellidos"
+                                        class="form-label"
+                                    >
+                                        Apellidos
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="admin-usuario-apellidos"
+                                        maxlength="100"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Correo y fecha nacimiento -->
+                            <div class="row">
+
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label
+                                        for="admin-usuario-correo"
+                                        class="form-label"
+                                    >
+                                        Correo
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="admin-usuario-correo"
+                                        maxlength="100"
+                                        placeholder="usuario@gmail.com"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label
+                                        for="admin-usuario-fecha"
+                                        class="form-label"
+                                    >
+                                        Fecha de nacimiento
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="admin-usuario-fecha"
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Tipo de usuario -->
+                            <div class="row">
+
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label
+                                        for="admin-usuario-tipo"
+                                        class="form-label"
+                                    >
+                                        Tipo de usuario
+                                    </label>
+
+                                    <select
+                                        class="form-select"
+                                        id="admin-usuario-tipo"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Seleccionar
+                                        </option>
+
+                                        <option value="Administrador">
+                                            Administrador
+                                        </option>
+
+                                        <option value="Cliente">
+                                            Cliente
+                                        </option>
+
+                                        <option value="Vendedor">
+                                            Vendedor
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+
+                                <!-- Región -->
+                                <div class="col-md-4 mb-3">
+
+                                    <label
+                                        for="admin-usuario-region"
+                                        class="form-label"
+                                    >
+                                        Región
+                                    </label>
+
+                                    <select
+                                        class="form-select"
+                                        id="admin-usuario-region"
+                                    >
+
+                                        <option value="">
+                                            Seleccionar región
+                                        </option>
+
+                                        <option value="Coquimbo">
+                                            Región de Coquimbo
+                                        </option>
+
+                                        <option value="Valparaiso">
+                                            Región de Valparaíso
+                                        </option>
+
+                                        <option value="Metropolitana">
+                                            Región Metropolitana
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+
+                                <!-- Comuna -->
+                                <div class="col-md-4 mb-3">
+
+                                    <label
+                                        for="admin-usuario-comuna"
+                                        class="form-label"
+                                    >
+                                        Comuna
+                                    </label>
+
+                                    <select
+                                        class="form-select"
+                                        id="admin-usuario-comuna"
+                                    >
+
+                                        <option value="">
+                                            Seleccionar comuna
+                                        </option>
+
+                                        <option value="La Serena">
+                                            La Serena
+                                        </option>
+
+                                        <option value="Coquimbo">
+                                            Coquimbo
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Dirección -->
+                            <div class="mb-3">
+
+                                <label
+                                    for="admin-usuario-direccion"
+                                    class="form-label"
+                                >
+                                    Dirección
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="admin-usuario-direccion"
+                                    maxlength="300"
+                                    required
+                                >
+
+                            </div>
+
+
+
+                            <!-- Guardar -->
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Guardar usuario
+                            </button>
+
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==================================================
+                 TABLA DE USUARIOS
+            ================================================== -->
+
+            <div class="table-responsive">
+
+                <table
+                    class="table table-striped table-bordered align-middle"
+                >
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>
+                                RUN
+                            </th>
+
+                            <th>
+                                Nombre
+                            </th>
+
+                            <th>
+                                Correo
+                            </th>
+
+                            <th>
+                                Tipo
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!--
+                        JavaScript agrega aquí los usuarios.
+                    -->
+                    <tbody id="cuerpo-usuarios-admin">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </main>
+
+    </div>
+
+</div>
+
+
+
+<!-- Bootstrap -->
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+<!-- JavaScript exclusivo del administrador -->
+<script src="js/admin.js"></script>
+
+
+</body>
+
+</html>

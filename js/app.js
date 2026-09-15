@@ -675,13 +675,140 @@ function validarContacto() {
     document.getElementById("contacto-comentario").value="";
     return false;
 }
+function actualizarStockDesdeAdmin() {
 
+    const productosAdminGuardados =
+        localStorage.getItem("productosAdminFerreteria");
+
+    // Si el administrador todavía no ha guardado productos,
+    // se mantienen los valores originales
+    if (productosAdminGuardados === null) {
+        return;
+    }
+
+    const productosAdmin =
+        JSON.parse(productosAdminGuardados);
+
+
+    // Recorremos los productos de la tienda
+    for (let i = 0; i < productos.length; i++) {
+
+        // Buscamos el mismo producto en administración
+        for (let j = 0; j < productosAdmin.length; j++) {
+
+            if (
+                productos[i].codigo === productosAdmin[j].codigo
+            ) {
+
+                // Actualizamos solamente el stock
+                productos[i].stock =
+                    productosAdmin[j].stock;
+
+                break;
+            }
+        }
+    }
+}
+function cargarProductosDesdeAdmin() {
+
+    const productosAdminGuardados =
+        localStorage.getItem("productosAdminFerreteria");
+
+    if (productosAdminGuardados === null) {
+        return;
+    }
+
+    const productosAdmin =
+        JSON.parse(productosAdminGuardados);
+
+
+    for (let i = 0; i < productosAdmin.length; i++) {
+
+        const productoAdmin = productosAdmin[i];
+
+        let encontrado = false;
+
+
+        // Buscar si ya existe en la tienda
+        for (let j = 0; j < productos.length; j++) {
+
+            if (
+                productos[j].codigo === productoAdmin.codigo
+            ) {
+
+                productos[j].nombre =
+                    productoAdmin.nombre;
+
+                productos[j].categoria =
+                    productoAdmin.categoria;
+
+                productos[j].precio =
+                    productoAdmin.precio;
+
+                productos[j].stock =
+                    productoAdmin.stock;
+
+                encontrado = true;
+
+                break;
+            }
+        }
+
+
+        // Si no existe, se agrega a la tienda
+        if (encontrado === false) {
+
+            productos.push({
+                id: productos.length + 1,
+                codigo: productoAdmin.codigo,
+                nombre: productoAdmin.nombre,
+                categoria: productoAdmin.categoria,
+                categoriaSlug: "general",
+                precio: productoAdmin.precio,
+                stock: productoAdmin.stock,
+                icono: "🧰"
+            });
+        }
+    }
+}
+function aplicarProductosEliminadosAdmin() {
+
+    const eliminadosGuardados =
+        localStorage.getItem("productosEliminadosAdmin");
+
+
+    if (eliminadosGuardados === null) {
+        return;
+    }
+
+
+    const eliminados =
+        JSON.parse(eliminadosGuardados);
+
+
+    // Se recorre desde el final para poder eliminar
+    // elementos del arreglo sin problemas
+    for (let i = productos.length - 1; i >= 0; i--) {
+
+        if (
+            eliminados.includes(productos[i].codigo)
+        ) {
+
+            productos.splice(i, 1);
+        }
+    }
+}
 
 // ----------------------------------------------------------
 // Inicialización
 // ----------------------------------------------------------
 
+
+cargarProductosDesdeAdmin();
+aplicarProductosEliminadosAdmin();
+actualizarStockDesdeAdmin();
 mostrarProductos();
 mostrarDetalleProducto();
 mostrarCarrito();
 actualizarMenuUsuario();
+
