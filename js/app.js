@@ -624,6 +624,58 @@ function cerrarSesion() {
     window.location.href = "index.html";
 }
 
+function validarContacto() {
+    const nombre =document.getElementById("contacto-nombre").value;
+    const email =document.getElementById("contacto-email").value;
+    const comentario =document.getElementById("contacto-comentario").value;
+
+    const errorNombre =document.getElementById("error-contacto-nombre");
+    const errorEmail =document.getElementById("error-contacto-email");
+    const errorComentario =document.getElementById("error-contacto-comentario");
+
+    const mensajeContacto =document.getElementById("mensaje-contacto");
+
+    errorNombre.textContent ="";
+    errorEmail.textContent ="";
+    errorComentario.textContent ="";
+    mensajeContacto.classList.add("d-none");
+
+    let esValido = true;
+    if (nombre.trim() === "") {
+        errorNombre.textContent ="Debes ingresar tu nombre";   
+        esValido = false;
+    }
+
+    if(nombre.length > 100){
+        errorNombre.textContent ="El nombre no puede superar los 100 caracteres";
+        esValido = false;
+    }
+    if(email.trim() === ""){
+        errorEmail.textContent ="Debes ingresar tu correo electrónico";
+        esValido = false;
+    }else if (validarCorreo(email)===false){
+        errorEmail.textContent ="El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com";
+        esValido = false;
+    }
+    if(comentario.trim() === ""){
+        errorComentario.textContent ="Debes ingresar un comentario";
+        esValido = false;
+    }
+    if(comentario.length > 500){
+        errorComentario.textContent ="El comentario no puede superar los 500 caracteres";
+        esValido = false;
+    }
+
+    if(esValido === false){
+        return false;
+    }
+    mensajeContacto.classList.remove("d-none");
+    document.getElementById("contacto-nombre").value="";
+    document.getElementById("contacto-email").value="";
+    document.getElementById("contacto-comentario").value="";
+    return false;
+}
+
 
 // ----------------------------------------------------------
 // Inicialización
