@@ -1,38 +1,45 @@
 // ==========================================================
 // app.js - Ferretería Los Maestros
-// Catálogo de productos, carrito de compras y usuarios.
+// Catálogo, carrito, usuarios, formularios y administración
 // ==========================================================
 
+
+// ================= PRODUCTOS =================
+
+// Arreglo principal con los productos de la tienda
 const productos = [
-    { id: 1, codigo: "MAR001", nombre: "Martillo Carpintero",        categoria: "Herramientas manuales",     categoriaSlug: "manuales",     precio: 6990,  stock: 25, icono: "🔨" },
-    { id: 2, codigo: "TAL002", nombre: "Taladro Percutor 650W",      categoria: "Herramientas eléctricas",   categoriaSlug: "electricas",   precio: 39990, stock: 12, icono: "🔌" },
-    { id: 3, codigo: "CEM003", nombre: "Saco de Cemento 25kg",       categoria: "Materiales de construcción", categoriaSlug: "construccion", precio: 5490,  stock: 40, icono: "🧱" },
-    { id: 4, codigo: "PIN004", nombre: "Pintura Látex 1 Galón",      categoria: "Pinturas",                   categoriaSlug: "pinturas",     precio: 12990, stock: 18, icono: "🎨" },
-    { id: 5, codigo: "GUA005", nombre: "Guantes de Seguridad",       categoria: "Seguridad y EPP",            categoriaSlug: "seguridad",    precio: 3990,  stock: 30, icono: "🦺" },
-    { id: 6, codigo: "TOR006", nombre: "Caja de Tornillos (100 un.)", categoria: "Ferretería general",        categoriaSlug: "general",      precio: 2490,  stock: 50, icono: "🔩" }
+    { id: 1, codigo: "MAR001", nombre: "Martillo Carpintero", categoria: "Herramientas manuales", categoriaSlug: "manuales", precio: 6990, stock: 25, icono: "🔨" },
+    { id: 2, codigo: "TAL002", nombre: "Taladro Percutor 650W", categoria: "Herramientas eléctricas", categoriaSlug: "electricas", precio: 39990, stock: 12, icono: "🔌" },
+    { id: 3, codigo: "CEM003", nombre: "Saco de Cemento 25kg", categoria: "Materiales de construcción", categoriaSlug: "construccion", precio: 5490, stock: 40, icono: "🧱" },
+    { id: 4, codigo: "PIN004", nombre: "Pintura Látex 1 Galón", categoria: "Pinturas", categoriaSlug: "pinturas", precio: 12990, stock: 18, icono: "🎨" },
+    { id: 5, codigo: "GUA005", nombre: "Guantes de Seguridad", categoria: "Seguridad y EPP", categoriaSlug: "seguridad", precio: 3990, stock: 30, icono: "🦺" },
+    { id: 6, codigo: "TOR006", nombre: "Caja de Tornillos (100 un.)", categoria: "Ferretería general", categoriaSlug: "general", precio: 2490, stock: 50, icono: "🔩" }
 ];
 
-// ----------------------------------------------------------
-// Muestra las cards de productos en productos.html
-// ----------------------------------------------------------
+
+// Muestra los productos y permite filtrar usando ?categoria=
 function mostrarProductos() {
     const contenedor = document.getElementById("contenedor-productos");
 
+    // Permite usar el mismo app.js en páginas que no tienen catálogo
     if (contenedor === null) {
         return;
     }
 
+    // Lee la categoría desde la URL
     const parametros = new URLSearchParams(window.location.search);
     const categoriaFiltro = parametros.get("categoria");
 
     let productosAMostrar = [];
 
+    // Si no hay filtro muestra todos, si hay filtro muestra esa categoría
     for (let i = 0; i < productos.length; i++) {
         if (categoriaFiltro === null || productos[i].categoriaSlug === categoriaFiltro) {
             productosAMostrar.push(productos[i]);
         }
     }
 
+    // Muestra el nombre de la categoría seleccionada
     const tituloCategoria = document.getElementById("categoria-actual");
 
     if (tituloCategoria !== null) {
@@ -50,6 +57,7 @@ function mostrarProductos() {
 
     let html = "";
 
+    // Crea las tarjetas de productos dinámicamente
     for (let i = 0; i < productosAMostrar.length; i++) {
         const p = productosAMostrar[i];
 
@@ -88,21 +96,26 @@ function mostrarProductos() {
         `;
     }
 
+    // Inserta las tarjetas dentro de productos.html
     contenedor.innerHTML = html;
 }
 
-// ----------------------------------------------------------
-// Búsqueda y gestión del Carrito de Compras
-// ----------------------------------------------------------
+
+// Busca un producto usando su id
 function buscarProductoPorId(id) {
     for (let i = 0; i < productos.length; i++) {
         if (productos[i].id === id) {
             return productos[i];
         }
     }
+
     return null;
 }
 
+
+// ================= CARRITO =================
+
+// Agrega un producto al carrito y lo guarda en localStorage
 function agregarAlCarrito(id) {
     let carritoGuardado = localStorage.getItem("carritoFerreteria");
     let carrito = [];
@@ -113,6 +126,7 @@ function agregarAlCarrito(id) {
 
     let yaExiste = false;
 
+    // Si el producto ya existe aumenta su cantidad
     for (let i = 0; i < carrito.length; i++) {
         if (carrito[i].id === id) {
             carrito[i].cantidad = carrito[i].cantidad + 1;
@@ -120,48 +134,48 @@ function agregarAlCarrito(id) {
         }
     }
 
+    // Si no existe, lo agrega con cantidad 1
     if (yaExiste === false) {
         carrito.push({ id: id, cantidad: 1 });
     }
 
-    localStorage.setItem("carritoFerreteria", JSON.stringify(carrito));
+    localStorage.setItem(
+        "carritoFerreteria",
+        JSON.stringify(carrito)
+    );
+
     alert("Producto agregado al carrito");
 }
-// ----------------------------------------------------------
-// Detalle del producto
-// ----------------------------------------------------------
 
-// Muestra en detalle-producto.html la información del producto
-// seleccionado desde productos.html
+
+// ================= DETALLE PRODUCTO =================
+
+// Obtiene el id desde la URL y muestra el producto seleccionado
 function mostrarDetalleProducto() {
-
-    // Busca el contenedor donde se mostrará el detalle
     const contenedor = document.getElementById("detalle-producto");
 
-    // Si la página no tiene este contenedor, no hace nada
     if (contenedor === null) {
         return;
     }
 
-    // Obtiene el id enviado por la URL
     const parametros = new URLSearchParams(window.location.search);
     const id = Number(parametros.get("id"));
 
-    // Busca el producto usando su id
     const productoEncontrado = buscarProductoPorId(id);
 
-    // Si no encuentra el producto muestra un mensaje
     if (productoEncontrado === null) {
         contenedor.innerHTML =
             "<div class='alert alert-danger'>Producto no encontrado</div>";
         return;
     }
 
-    // Muestra la información del producto
     contenedor.innerHTML = `
         <div class="card">
             <div class="card-body">
-                <div class="fs-1 text-center">${productoEncontrado.icono}</div>
+
+                <div class="fs-1 text-center">
+                    ${productoEncontrado.icono}
+                </div>
 
                 <h2 class="card-title">
                     ${productoEncontrado.nombre}
@@ -179,22 +193,21 @@ function mostrarDetalleProducto() {
                     Agregar al carrito
                 </button>
 
-                <a href="productos.html" class="btn btn-secondary">
+                <a href="productos.html"
+                   class="btn btn-secondary">
                     Volver al catálogo
                 </a>
+
             </div>
         </div>
     `;
 }
 
 
-// ----------------------------------------------------------
-// Carrito de compras
-// ----------------------------------------------------------
+// ================= GESTIÓN DEL CARRITO =================
 
-// Elimina del carrito el producto que tenga el id indicado
+// Elimina un producto específico del carrito
 function eliminarDelCarrito(id) {
-
     let carritoGuardado =
         localStorage.getItem("carritoFerreteria");
 
@@ -206,29 +219,24 @@ function eliminarDelCarrito(id) {
 
     let carritoNuevo = [];
 
-    // Guarda solamente los productos que no tengan
-    // el mismo id del producto que queremos eliminar
+    // Conserva todos excepto el producto seleccionado
     for (let i = 0; i < carrito.length; i++) {
-
         if (carrito[i].id !== id) {
             carritoNuevo.push(carrito[i]);
         }
     }
 
-    // Guarda nuevamente el carrito
     localStorage.setItem(
         "carritoFerreteria",
         JSON.stringify(carritoNuevo)
     );
 
-    // Actualiza la página
     mostrarCarrito();
 }
 
 
-// Actualiza el valor total mostrado en carrito.html
+// Actualiza el total mostrado en carrito.html
 function actualizarTotal(total) {
-
     const totalTexto =
         document.getElementById("total-carrito");
 
@@ -238,18 +246,15 @@ function actualizarTotal(total) {
 }
 
 
-// Muestra todos los productos guardados en el carrito
+// Recupera el carrito, calcula subtotales y muestra los productos
 function mostrarCarrito() {
-
     const contenedor =
         document.getElementById("contenedor-carrito");
 
-    // Si no estamos en carrito.html no hace nada
     if (contenedor === null) {
         return;
     }
 
-    // Recupera el carrito desde localStorage
     let carritoGuardado =
         localStorage.getItem("carritoFerreteria");
 
@@ -259,42 +264,34 @@ function mostrarCarrito() {
         carrito = JSON.parse(carritoGuardado);
     }
 
-    // Si el carrito está vacío muestra un mensaje
+    // Caso carrito vacío
     if (carrito.length === 0) {
-
         contenedor.innerHTML =
             "<div class='alert alert-info'>El carrito está vacío. <a href='productos.html'>Ver productos</a></div>";
 
         actualizarTotal(0);
-
         return;
     }
 
     let html = "";
     let total = 0;
 
-    // Recorre todos los productos guardados
+    // Recorre el carrito y calcula precio x cantidad
     for (let i = 0; i < carrito.length; i++) {
-
         const item = carrito[i];
 
-        // Busca la información completa del producto
         const producto =
             buscarProductoPorId(item.id);
 
-        // Si por alguna razón el producto no existe
-        // continúa con el siguiente
         if (producto === null) {
             continue;
         }
 
-        // Calcula el subtotal del producto
         const subtotal =
             producto.precio * item.cantidad;
 
         total = total + subtotal;
 
-        // Construye la tarjeta del producto
         html += `
             <div class="card mb-3">
                 <div class="card-body">
@@ -323,29 +320,22 @@ function mostrarCarrito() {
         `;
     }
 
-    // Muestra todos los productos
     contenedor.innerHTML = html;
-
-    // Actualiza el total
     actualizarTotal(total);
 }
 
 
-// Vacía completamente el carrito
+// Elimina todo el carrito de localStorage
 function vaciarCarrito() {
-
     localStorage.removeItem("carritoFerreteria");
-
     mostrarCarrito();
 }
 
 
-// ----------------------------------------------------------
-// Validaciones y gestión de usuarios
-// ----------------------------------------------------------
+// ================= USUARIOS =================
 
+// Solo permite correos de los dominios definidos
 function validarCorreo(correo) {
-
     if (
         correo.endsWith("@duoc.cl") ||
         correo.endsWith("@profesor.duoc.cl") ||
@@ -358,8 +348,8 @@ function validarCorreo(correo) {
 }
 
 
+// Busca un usuario registrado usando correo y contraseña
 function buscarUsuario(correo, clave) {
-
     let usuariosGuardados =
         localStorage.getItem("usuariosFerreteria");
 
@@ -370,7 +360,6 @@ function buscarUsuario(correo, clave) {
     }
 
     for (let i = 0; i < usuarios.length; i++) {
-
         if (
             usuarios[i].correo === correo &&
             usuarios[i].clave === clave
@@ -383,8 +372,10 @@ function buscarUsuario(correo, clave) {
 }
 
 
-function validarLogin() {
+// ================= LOGIN =================
 
+// Valida los datos y guarda al usuario que inicia sesión
+function validarLogin() {
     const email =
         document.getElementById("login-email").value;
 
@@ -397,24 +388,25 @@ function validarLogin() {
     const errorPassword =
         document.getElementById("error-login-password");
 
+    // Limpia errores anteriores
     errorEmail.textContent = "";
     errorPassword.textContent = "";
 
     let esValido = true;
 
+    // Valida dominio del correo
     if (validarCorreo(email) === false) {
-
         errorEmail.textContent =
             "El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com";
 
         esValido = false;
     }
 
+    // Valida largo de contraseña
     if (
         password.length < 4 ||
         password.length > 10
     ) {
-
         errorPassword.textContent =
             "La contraseña debe tener entre 4 y 10 caracteres";
 
@@ -425,17 +417,18 @@ function validarLogin() {
         return false;
     }
 
+    // Comprueba que el usuario exista
     const usuario =
         buscarUsuario(email, password);
 
     if (usuario === null) {
-
         errorPassword.textContent =
             "Correo o contraseña incorrectos";
 
         return false;
     }
 
+    // Guarda al usuario que tiene la sesión activa
     localStorage.setItem(
         "usuarioActualFerreteria",
         JSON.stringify(usuario)
@@ -449,8 +442,10 @@ function validarLogin() {
 }
 
 
-function validarRegistro() {
+// ================= REGISTRO =================
 
+// Valida y guarda nuevos usuarios en localStorage
+function validarRegistro() {
     const nombre =
         document.getElementById("registro-nombre").value;
 
@@ -475,6 +470,7 @@ function validarRegistro() {
     const errorPassword2 =
         document.getElementById("error-registro-password2");
 
+    // Limpia mensajes anteriores
     errorNombre.textContent = "";
     errorEmail.textContent = "";
     errorPassword.textContent = "";
@@ -483,7 +479,6 @@ function validarRegistro() {
     let esValido = true;
 
     if (nombre.trim() === "") {
-
         errorNombre.textContent =
             "Debes ingresar tu nombre";
 
@@ -491,7 +486,6 @@ function validarRegistro() {
     }
 
     if (validarCorreo(email) === false) {
-
         errorEmail.textContent =
             "El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com";
 
@@ -502,7 +496,6 @@ function validarRegistro() {
         password.length < 4 ||
         password.length > 10
     ) {
-
         errorPassword.textContent =
             "La contraseña debe tener entre 4 y 10 caracteres";
 
@@ -510,7 +503,6 @@ function validarRegistro() {
     }
 
     if (password !== password2) {
-
         errorPassword2.textContent =
             "Las contraseñas no coinciden";
 
@@ -521,6 +513,7 @@ function validarRegistro() {
         return false;
     }
 
+    // Recupera los usuarios existentes
     let usuariosGuardados =
         localStorage.getItem("usuariosFerreteria");
 
@@ -530,6 +523,7 @@ function validarRegistro() {
         usuarios = JSON.parse(usuariosGuardados);
     }
 
+    // Agrega el nuevo usuario
     usuarios.push({
         nombre: nombre,
         correo: email,
@@ -541,9 +535,7 @@ function validarRegistro() {
         JSON.stringify(usuarios)
     );
 
-    alert(
-        "Cuenta creada con éxito. Ahora inicia sesión."
-    );
+    alert("Cuenta creada con éxito. Ahora inicia sesión.");
 
     window.location.href = "login.html";
 
@@ -551,12 +543,10 @@ function validarRegistro() {
 }
 
 
-// ----------------------------------------------------------
-// Gestión del menú según estado de sesión
-// ----------------------------------------------------------
+// ================= SESIÓN Y MENÚ =================
 
+// Cambia las opciones del navbar dependiendo de si hay sesión
 function actualizarMenuUsuario() {
-
     const navLogin =
         document.getElementById("nav-login");
 
@@ -572,8 +562,7 @@ function actualizarMenuUsuario() {
     const navLogout =
         document.getElementById("nav-logout");
 
-    // Si la página no tiene estos elementos
-    // no hace nada
+    // Algunas páginas no tienen estos elementos
     if (
         navLogin === null ||
         navRegistro === null ||
@@ -586,21 +575,20 @@ function actualizarMenuUsuario() {
     const usuarioGuardado =
         localStorage.getItem("usuarioActualFerreteria");
 
+    // Sin sesión: muestra login y registro
     if (usuarioGuardado === null) {
-
         navLogin.classList.remove("d-none");
         navRegistro.classList.remove("d-none");
 
         navUsuario.classList.add("d-none");
         navLogout.classList.add("d-none");
 
+    // Con sesión: muestra nombre y cerrar sesión
     } else {
-
         const usuario =
             JSON.parse(usuarioGuardado);
 
         if (navUsuarioNombre !== null) {
-
             navUsuarioNombre.textContent =
                 "Hola, " + usuario.nombre;
         }
@@ -614,9 +602,8 @@ function actualizarMenuUsuario() {
 }
 
 
-// Cierra la sesión del usuario
+// Elimina solamente la sesión actual
 function cerrarSesion() {
-
     localStorage.removeItem(
         "usuarioActualFerreteria"
     );
@@ -624,64 +611,107 @@ function cerrarSesion() {
     window.location.href = "index.html";
 }
 
+
+// ================= CONTACTO =================
+
+// Valida el formulario de contacto
 function validarContacto() {
-    const nombre =document.getElementById("contacto-nombre").value;
-    const email =document.getElementById("contacto-email").value;
-    const comentario =document.getElementById("contacto-comentario").value;
+    const nombre =
+        document.getElementById("contacto-nombre").value;
 
-    const errorNombre =document.getElementById("error-contacto-nombre");
-    const errorEmail =document.getElementById("error-contacto-email");
-    const errorComentario =document.getElementById("error-contacto-comentario");
+    const email =
+        document.getElementById("contacto-email").value;
 
-    const mensajeContacto =document.getElementById("mensaje-contacto");
+    const comentario =
+        document.getElementById("contacto-comentario").value;
 
-    errorNombre.textContent ="";
-    errorEmail.textContent ="";
-    errorComentario.textContent ="";
+    const errorNombre =
+        document.getElementById("error-contacto-nombre");
+
+    const errorEmail =
+        document.getElementById("error-contacto-email");
+
+    const errorComentario =
+        document.getElementById("error-contacto-comentario");
+
+    const mensajeContacto =
+        document.getElementById("mensaje-contacto");
+
+    // Limpia errores anteriores
+    errorNombre.textContent = "";
+    errorEmail.textContent = "";
+    errorComentario.textContent = "";
+
     mensajeContacto.classList.add("d-none");
 
     let esValido = true;
+
+    // Nombre obligatorio y máximo 100 caracteres
     if (nombre.trim() === "") {
-        errorNombre.textContent ="Debes ingresar tu nombre";   
+        errorNombre.textContent =
+            "Debes ingresar tu nombre";
+
         esValido = false;
     }
 
-    if(nombre.length > 100){
-        errorNombre.textContent ="El nombre no puede superar los 100 caracteres";
-        esValido = false;
-    }
-    if(email.trim() === ""){
-        errorEmail.textContent ="Debes ingresar tu correo electrónico";
-        esValido = false;
-    }else if (validarCorreo(email)===false){
-        errorEmail.textContent ="El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com";
-        esValido = false;
-    }
-    if(comentario.trim() === ""){
-        errorComentario.textContent ="Debes ingresar un comentario";
-        esValido = false;
-    }
-    if(comentario.length > 500){
-        errorComentario.textContent ="El comentario no puede superar los 500 caracteres";
+    if (nombre.length > 100) {
+        errorNombre.textContent =
+            "El nombre no puede superar los 100 caracteres";
+
         esValido = false;
     }
 
-    if(esValido === false){
+    // Correo obligatorio y dominio permitido
+    if (email.trim() === "") {
+        errorEmail.textContent =
+            "Debes ingresar tu correo electrónico";
+
+        esValido = false;
+
+    } else if (validarCorreo(email) === false) {
+        errorEmail.textContent =
+            "El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com";
+
+        esValido = false;
+    }
+
+    // Comentario obligatorio y máximo 500 caracteres
+    if (comentario.trim() === "") {
+        errorComentario.textContent =
+            "Debes ingresar un comentario";
+
+        esValido = false;
+    }
+
+    if (comentario.length > 500) {
+        errorComentario.textContent =
+            "El comentario no puede superar los 500 caracteres";
+
+        esValido = false;
+    }
+
+    if (esValido === false) {
         return false;
     }
+
+    // Muestra mensaje de éxito y limpia el formulario
     mensajeContacto.classList.remove("d-none");
-    document.getElementById("contacto-nombre").value="";
-    document.getElementById("contacto-email").value="";
-    document.getElementById("contacto-comentario").value="";
+
+    document.getElementById("contacto-nombre").value = "";
+    document.getElementById("contacto-email").value = "";
+    document.getElementById("contacto-comentario").value = "";
+
     return false;
 }
-function actualizarStockDesdeAdmin() {
 
+
+// ================= CONEXIÓN CON ADMIN =================
+
+// Actualiza el stock de los productos existentes según administración
+function actualizarStockDesdeAdmin() {
     const productosAdminGuardados =
         localStorage.getItem("productosAdminFerreteria");
 
-    // Si el administrador todavía no ha guardado productos,
-    // se mantienen los valores originales
     if (productosAdminGuardados === null) {
         return;
     }
@@ -689,18 +719,14 @@ function actualizarStockDesdeAdmin() {
     const productosAdmin =
         JSON.parse(productosAdminGuardados);
 
-
-    // Recorremos los productos de la tienda
     for (let i = 0; i < productos.length; i++) {
 
-        // Buscamos el mismo producto en administración
         for (let j = 0; j < productosAdmin.length; j++) {
 
             if (
-                productos[i].codigo === productosAdmin[j].codigo
+                productos[i].codigo ===
+                productosAdmin[j].codigo
             ) {
-
-                // Actualizamos solamente el stock
                 productos[i].stock =
                     productosAdmin[j].stock;
 
@@ -709,8 +735,11 @@ function actualizarStockDesdeAdmin() {
         }
     }
 }
-function cargarProductosDesdeAdmin() {
 
+
+// Carga cambios realizados por administración
+// También agrega productos nuevos a la tienda
+function cargarProductosDesdeAdmin() {
     const productosAdminGuardados =
         localStorage.getItem("productosAdminFerreteria");
 
@@ -721,21 +750,20 @@ function cargarProductosDesdeAdmin() {
     const productosAdmin =
         JSON.parse(productosAdminGuardados);
 
-
     for (let i = 0; i < productosAdmin.length; i++) {
 
-        const productoAdmin = productosAdmin[i];
+        const productoAdmin =
+            productosAdmin[i];
 
         let encontrado = false;
 
-
-        // Buscar si ya existe en la tienda
+        // Busca si el producto ya existe por su código
         for (let j = 0; j < productos.length; j++) {
 
             if (
-                productos[j].codigo === productoAdmin.codigo
+                productos[j].codigo ===
+                productoAdmin.codigo
             ) {
-
                 productos[j].nombre =
                     productoAdmin.nombre;
 
@@ -749,15 +777,12 @@ function cargarProductosDesdeAdmin() {
                     productoAdmin.stock;
 
                 encontrado = true;
-
                 break;
             }
         }
 
-
-        // Si no existe, se agrega a la tienda
+        // Si es un producto nuevo, se agrega a la tienda
         if (encontrado === false) {
-
             productos.push({
                 id: productos.length + 1,
                 codigo: productoAdmin.codigo,
@@ -771,44 +796,41 @@ function cargarProductosDesdeAdmin() {
         }
     }
 }
-function aplicarProductosEliminadosAdmin() {
 
+
+// Elimina de la tienda los productos borrados por el administrador
+function aplicarProductosEliminadosAdmin() {
     const eliminadosGuardados =
         localStorage.getItem("productosEliminadosAdmin");
-
 
     if (eliminadosGuardados === null) {
         return;
     }
 
-
     const eliminados =
         JSON.parse(eliminadosGuardados);
 
-
-    // Se recorre desde el final para poder eliminar
-    // elementos del arreglo sin problemas
+    // Recorre desde el final para poder usar splice()
     for (let i = productos.length - 1; i >= 0; i--) {
 
         if (
             eliminados.includes(productos[i].codigo)
         ) {
-
             productos.splice(i, 1);
         }
     }
 }
 
-// ----------------------------------------------------------
-// Inicialización
-// ----------------------------------------------------------
 
+// ================= INICIALIZACIÓN =================
 
+// Primero aplica los cambios del administrador
 cargarProductosDesdeAdmin();
 aplicarProductosEliminadosAdmin();
 actualizarStockDesdeAdmin();
+
+// Después carga las funciones necesarias de cada página
 mostrarProductos();
 mostrarDetalleProducto();
 mostrarCarrito();
 actualizarMenuUsuario();
-

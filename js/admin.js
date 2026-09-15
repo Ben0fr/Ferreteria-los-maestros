@@ -1,16 +1,21 @@
-// ----------------------------------------------------------
-// PRODUCTOS DEL ADMINISTRADOR
-// ----------------------------------------------------------
+// ==========================================================
+// admin.js - Ferretería Los Maestros
+// Administración de productos y usuarios con localStorage
+// ==========================================================
 
+
+// ================= PRODUCTOS =================
+
+// Obtiene los productos guardados.
+// Si todavía no existen, crea los productos iniciales.
 function obtenerProductosAdmin() {
-
-    const guardados = localStorage.getItem("productosAdminFerreteria");
+    const guardados =
+        localStorage.getItem("productosAdminFerreteria");
 
     if (guardados !== null) {
         return JSON.parse(guardados);
     }
 
-    // Productos iniciales
     const productosIniciales = [
         {
             codigo: "MAR001",
@@ -65,8 +70,8 @@ function obtenerProductosAdmin() {
 }
 
 
+// Guarda el arreglo completo de productos
 function guardarProductosAdmin(productos) {
-
     localStorage.setItem(
         "productosAdminFerreteria",
         JSON.stringify(productos)
@@ -74,15 +79,14 @@ function guardarProductosAdmin(productos) {
 }
 
 
-// ----------------------------------------------------------
-// MOSTRAR PRODUCTOS
-// ----------------------------------------------------------
+// ================= MOSTRAR PRODUCTOS =================
 
+// Crea dinámicamente las filas de la tabla
 function mostrarProductosAdmin() {
-
     const cuerpoTabla =
         document.getElementById("cuerpo-productos-admin");
 
+    // Permite usar admin.js en páginas que no tienen esta tabla
     if (cuerpoTabla === null) {
         return;
     }
@@ -92,40 +96,29 @@ function mostrarProductosAdmin() {
     let html = "";
 
     for (let i = 0; i < productos.length; i++) {
-
         const producto = productos[i];
 
         html += `
             <tr>
-
                 <td>${producto.codigo}</td>
-
                 <td>${producto.nombre}</td>
-
                 <td>${producto.categoria}</td>
-
                 <td>$${producto.precio}</td>
-
                 <td>${producto.stock}</td>
 
                 <td>
-
                     <button
                         class="btn btn-sm btn-warning me-1"
-                        onclick="editarProducto(${i})"
-                    >
+                        onclick="editarProducto(${i})">
                         Editar
                     </button>
 
                     <button
                         class="btn btn-sm btn-danger"
-                        onclick="eliminarProducto(${i})"
-                    >
+                        onclick="eliminarProducto(${i})">
                         Eliminar
                     </button>
-
                 </td>
-
             </tr>
         `;
     }
@@ -134,12 +127,10 @@ function mostrarProductosAdmin() {
 }
 
 
-// ----------------------------------------------------------
-// CREAR PRODUCTO
-// ----------------------------------------------------------
+// ================= CREAR PRODUCTO =================
 
+// Obtiene los datos del formulario y crea un producto
 function guardarProductoAdmin() {
-
     const codigo =
         document.getElementById("admin-producto-codigo").value;
 
@@ -155,7 +146,7 @@ function guardarProductoAdmin() {
     const categoria =
         document.getElementById("admin-producto-categoria").value;
 
-
+    // Comprueba campos obligatorios
     if (
         codigo.trim() === "" ||
         nombre.trim() === "" ||
@@ -163,12 +154,9 @@ function guardarProductoAdmin() {
         stock === "" ||
         categoria === ""
     ) {
-
         alert("Completa los campos obligatorios");
-
         return false;
     }
-
 
     const nuevoProducto = {
         codigo: codigo,
@@ -178,33 +166,39 @@ function guardarProductoAdmin() {
         stock: Number(stock)
     };
 
-
     const productos = obtenerProductosAdmin();
-    
-    let eliminados =
-    JSON.parse(
-        localStorage.getItem("productosEliminadosAdmin")
-    ) || [];
 
-eliminados =
-    eliminados.filter(
-        codigo => codigo !== nuevoProducto.codigo
+    /*
+        Si anteriormente se eliminó un producto con el mismo código,
+        lo quitamos de la lista de eliminados para poder crearlo nuevamente.
+    */
+    let eliminados =
+        JSON.parse(
+            localStorage.getItem("productosEliminadosAdmin")
+        ) || [];
+
+    eliminados =
+        eliminados.filter(
+            codigo => codigo !== nuevoProducto.codigo
+        );
+
+    localStorage.setItem(
+        "productosEliminadosAdmin",
+        JSON.stringify(eliminados)
     );
 
-localStorage.setItem(
-    "productosEliminadosAdmin",
-    JSON.stringify(eliminados)
-);
-
-
+    // Agrega y guarda el producto
     productos.push(nuevoProducto);
 
     guardarProductosAdmin(productos);
 
+    // Actualiza inmediatamente la tabla
     mostrarProductosAdmin();
 
-
-    document.getElementById("formulario-producto-admin").reset();
+    // Limpia el formulario
+    document
+        .getElementById("formulario-producto-admin")
+        .reset();
 
     alert("Producto creado correctamente");
 
@@ -212,12 +206,10 @@ localStorage.setItem(
 }
 
 
-// ----------------------------------------------------------
-// MODIFICAR STOCK
-// ----------------------------------------------------------
+// ================= MODIFICAR STOCK =================
 
+// Permite cambiar solamente el stock de un producto
 function modificarStock(indice) {
-
     const productos = obtenerProductosAdmin();
 
     const producto = productos[indice];
@@ -227,25 +219,24 @@ function modificarStock(indice) {
         producto.stock
     );
 
-
+    // Cancelar no realiza cambios
     if (nuevoStock === null) {
         return;
     }
 
-
     const stockNumero = Number(nuevoStock);
 
-
+    // El stock debe ser entero y mayor o igual a 0
     if (
         Number.isInteger(stockNumero) === false ||
         stockNumero < 0
     ) {
-
-        alert("El stock debe ser un número entero igual o superior a 0");
+        alert(
+            "El stock debe ser un número entero igual o superior a 0"
+        );
 
         return;
     }
-
 
     productos[indice].stock = stockNumero;
 
@@ -255,23 +246,17 @@ function modificarStock(indice) {
 }
 
 
+// ================= USUARIOS =================
 
-// ----------------------------------------------------------
-// USUARIOS DEL ADMINISTRADOR
-// ----------------------------------------------------------
-
+// Obtiene usuarios del admin y también los registrados en la tienda
 function obtenerUsuariosAdmin() {
-
-    // Usuarios creados desde el panel administrador
     const usuariosAdminGuardados =
         localStorage.getItem("usuariosAdminFerreteria");
 
     let usuariosAdmin = [];
 
-
-    // Si ya existen usuarios del administrador, los recupera
+    // Recupera usuarios existentes del panel
     if (usuariosAdminGuardados !== null) {
-
         usuariosAdmin =
             JSON.parse(usuariosAdminGuardados);
 
@@ -301,44 +286,32 @@ function obtenerUsuariosAdmin() {
     }
 
 
-    // ----------------------------------------------------------
-    // Recuperar clientes registrados desde registro.html
-    // ----------------------------------------------------------
-
+    // Recupera clientes creados desde registro.html
     const usuariosTiendaGuardados =
         localStorage.getItem("usuariosFerreteria");
 
-
     if (usuariosTiendaGuardados !== null) {
-
         const usuariosTienda =
             JSON.parse(usuariosTiendaGuardados);
 
-
         for (let i = 0; i < usuariosTienda.length; i++) {
-
             const usuarioTienda = usuariosTienda[i];
 
             let yaExiste = false;
 
-
-            // Revisa que no se agregue dos veces
+            // Evita agregar dos veces el mismo correo
             for (let j = 0; j < usuariosAdmin.length; j++) {
-
                 if (
                     usuariosAdmin[j].correo ===
                     usuarioTienda.correo
                 ) {
-
                     yaExiste = true;
                     break;
                 }
             }
 
-
-            // Si no existe en administración, lo agrega
+            // Los registrados públicamente entran como Cliente
             if (yaExiste === false) {
-
                 usuariosAdmin.push({
                     run: "-",
                     nombre: usuarioTienda.nombre,
@@ -349,19 +322,17 @@ function obtenerUsuariosAdmin() {
         }
     }
 
-
-    // Guarda la lista actualizada
     localStorage.setItem(
         "usuariosAdminFerreteria",
         JSON.stringify(usuariosAdmin)
     );
 
-
     return usuariosAdmin;
 }
 
-function guardarUsuariosAdmin(usuarios) {
 
+// Guarda el arreglo de usuarios
+function guardarUsuariosAdmin(usuarios) {
     localStorage.setItem(
         "usuariosAdminFerreteria",
         JSON.stringify(usuarios)
@@ -369,12 +340,10 @@ function guardarUsuariosAdmin(usuarios) {
 }
 
 
-// ----------------------------------------------------------
-// MOSTRAR USUARIOS
-// ----------------------------------------------------------
+// ================= MOSTRAR USUARIOS =================
 
+// Genera dinámicamente las filas de usuarios
 function mostrarUsuariosAdmin() {
-
     const cuerpoTabla =
         document.getElementById("cuerpo-usuarios-admin");
 
@@ -382,42 +351,31 @@ function mostrarUsuariosAdmin() {
         return;
     }
 
-
     const usuarios = obtenerUsuariosAdmin();
 
     let html = "";
 
-
     for (let i = 0; i < usuarios.length; i++) {
-
         const usuario = usuarios[i];
 
         html += `
             <tr>
-
                 <td>${usuario.run}</td>
-
                 <td>${usuario.nombre}</td>
-
                 <td>${usuario.correo}</td>
-
                 <td>${usuario.tipo}</td>
-
             </tr>
         `;
     }
-
 
     cuerpoTabla.innerHTML = html;
 }
 
 
-// ----------------------------------------------------------
-// CREAR USUARIO
-// ----------------------------------------------------------
+// ================= CREAR USUARIO =================
 
+// Crea usuarios desde el panel administrativo
 function guardarUsuarioAdmin() {
-
     const run =
         document.getElementById("admin-usuario-run").value;
 
@@ -433,7 +391,7 @@ function guardarUsuarioAdmin() {
     const tipo =
         document.getElementById("admin-usuario-tipo").value;
 
-
+    // Comprueba campos obligatorios
     if (
         run.trim() === "" ||
         nombre.trim() === "" ||
@@ -441,12 +399,9 @@ function guardarUsuarioAdmin() {
         correo.trim() === "" ||
         tipo === ""
     ) {
-
         alert("Completa los campos obligatorios");
-
         return false;
     }
-
 
     const nuevoUsuario = {
         run: run,
@@ -455,43 +410,41 @@ function guardarUsuarioAdmin() {
         tipo: tipo
     };
 
-
     const usuarios = obtenerUsuariosAdmin();
 
     usuarios.push(nuevoUsuario);
 
     guardarUsuariosAdmin(usuarios);
 
+    // Actualiza inmediatamente la tabla
     mostrarUsuariosAdmin();
 
-
-    document.getElementById("formulario-usuario-admin").reset();
+    document
+        .getElementById("formulario-usuario-admin")
+        .reset();
 
     alert("Usuario creado correctamente");
 
     return false;
 }
-// ----------------------------------------------------------
-// EDITAR PRODUCTO
-// ----------------------------------------------------------
 
+
+// ================= EDITAR PRODUCTO =================
+
+// Permite modificar nombre, categoría, precio y stock
 function editarProducto(indice) {
-
     const productos = obtenerProductosAdmin();
 
     const producto = productos[indice];
-
 
     const nuevoNombre = prompt(
         "Nombre del producto:",
         producto.nombre
     );
 
-    // Si presiona cancelar
     if (nuevoNombre === null) {
         return;
     }
-
 
     const nuevaCategoria = prompt(
         "Categoría:",
@@ -502,7 +455,6 @@ function editarProducto(indice) {
         return;
     }
 
-
     const nuevoPrecio = prompt(
         "Precio:",
         producto.precio
@@ -511,7 +463,6 @@ function editarProducto(indice) {
     if (nuevoPrecio === null) {
         return;
     }
-
 
     const nuevoStock = prompt(
         "Stock:",
@@ -522,12 +473,10 @@ function editarProducto(indice) {
         return;
     }
 
-
     const precioNumero = Number(nuevoPrecio);
     const stockNumero = Number(nuevoStock);
 
-
-    // Validación
+    // Valida los nuevos valores
     if (
         nuevoNombre.trim() === "" ||
         precioNumero < 0 ||
@@ -535,40 +484,32 @@ function editarProducto(indice) {
         Number.isInteger(stockNumero) === false ||
         stockNumero < 0
     ) {
-
         alert("Los datos ingresados no son válidos");
-
         return;
     }
 
-
-    // Modifica el producto
+    // Modifica el objeto seleccionado
     productos[indice].nombre = nuevoNombre;
     productos[indice].categoria = nuevaCategoria;
     productos[indice].precio = precioNumero;
     productos[indice].stock = stockNumero;
 
-
-    // Guarda cambios
     guardarProductosAdmin(productos);
 
-
-    // Actualiza tabla
     mostrarProductosAdmin();
-
 
     alert("Producto modificado correctamente");
 }
-// ----------------------------------------------------------
-// ELIMINAR PRODUCTO
-// ----------------------------------------------------------
 
+
+// ================= ELIMINAR PRODUCTO =================
+
+// Elimina el producto del admin y registra su código
+// para que también desaparezca de la tienda pública
 function eliminarProducto(indice) {
-
     const productos = obtenerProductosAdmin();
 
     const producto = productos[indice];
-
 
     const confirmar = confirm(
         "¿Seguro que quieres eliminar " +
@@ -576,51 +517,44 @@ function eliminarProducto(indice) {
         "?"
     );
 
-
     if (confirmar === false) {
         return;
     }
 
-
-    // Guardamos el código del producto eliminado
-    // para que también desaparezca de la tienda
+    /*
+        Guarda los códigos eliminados para que app.js
+        también pueda quitarlos del catálogo público.
+    */
     let eliminados =
         JSON.parse(
             localStorage.getItem("productosEliminadosAdmin")
         ) || [];
 
-
-    if (eliminados.includes(producto.codigo) === false) {
-
+    if (
+        eliminados.includes(producto.codigo) === false
+    ) {
         eliminados.push(producto.codigo);
     }
-
 
     localStorage.setItem(
         "productosEliminadosAdmin",
         JSON.stringify(eliminados)
     );
 
-
-    // Elimina el producto del arreglo
+    // splice elimina el producto según su posición
     productos.splice(indice, 1);
 
-
-    // Guarda el nuevo arreglo
     guardarProductosAdmin(productos);
 
-
-    // Actualiza tabla
     mostrarProductosAdmin();
-
 
     alert("Producto eliminado correctamente");
 }
 
 
-// ----------------------------------------------------------
-// CARGAR LAS TABLAS
-// ----------------------------------------------------------
+// ================= INICIALIZACIÓN =================
 
+// Al abrir una página administrativa,
+// intenta cargar las tablas correspondientes.
 mostrarProductosAdmin();
 mostrarUsuariosAdmin();
