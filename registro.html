@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!--
+    Página de registro de usuarios.
+    Permite crear una cuenta y guarda los datos mediante JavaScript.
+-->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -13,34 +17,61 @@
 </head>
 <body>
 
-<!-- Aquí empieza el menú (el mismo que en las otras páginas) -->
+<!-- =========================================================
+     MENÚ DE NAVEGACIÓN
+     Este menú permite moverse entre las páginas principales.
+========================================================= -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!--
+        container mantiene el contenido centrado
+        y con márgenes adecuados.
+    -->
     <div class="container">
+        <!-- Nombre de la ferretería.
+             Al hacer clic vuelve a la página principal. -->
         <a class="navbar-brand" href="index.html">Ferretería Los Maestros</a>
-
+         <!--
+            Botón que aparece cuando la pantalla es pequeña.
+            Bootstrap se encarga de abrir y cerrar el menú.
+        -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!--
+            Contenedor de las opciones del menú.
+            En pantallas pequeñas puede contraerse.
+        -->
 
         <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- ms-auto mueve las opciones hacia la derecha -->
             <ul class="navbar-nav ms-auto">
+                <!-- Enlace hacia Inicio -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.html">Inicio</a>
                 </li>
+                <!-- Enlace hacia Productos -->
                 <li class="nav-item">
                     <a class="nav-link" href="productos.html">Productos</a>
                 </li>
+                <!-- Enlace hacia Nosotros -->
                 <li class="nav-item">
                     <a class="nav-link" href="nosotros.html">Nosotros</a>
                 </li>
+                <!-- Enlace hacia Contacto -->
                 <li class="nav-item">
                     <a class="nav-link" href="contacto.html">Contacto</a>
                 </li>
+                <!-- Enlace hacia Carrito -->
                 <li class="nav-item">
                     <a class="nav-link" href="carrito.html">Carrito</a>
                 </li>
 
-                <!-- Botones para iniciar sesión o crear una cuenta -->
+                 <!--
+                    OPCIONES CUANDO NO HAY SESIÓN INICIADA
+
+                    Los id nav-login y nav-registro son utilizados
+                    por app.js para mostrar u ocultar estas opciones.
+                -->
                 <li class="nav-item ms-lg-2" id="nav-login">
                     <a class="btn btn-outline-primary btn-sm" href="login.html">Iniciar Sesión</a>
                 </li>
@@ -48,11 +79,22 @@
                     <a class="btn btn-primary btn-sm" href="registro.html">Registrarse</a>
                 </li>
 
-                <!-- Esto se muestra en vez de los botones de arriba cuando ya iniciaste sesión -->
+                <!--
+                    OPCIONES CUANDO HAY UNA SESIÓN INICIADA
+
+                    d-none significa que inicialmente están ocultas.
+                    JavaScript las muestra cuando encuentra un usuario
+                    guardado en localStorage.
+                -->
                 <li class="nav-item ms-lg-3 d-none" id="nav-usuario">
+                    <!-- Aquí JavaScript escribe el nombre del usuario -->
                     <span class="fw-bold" id="nav-usuario-nombre"></span>
                 </li>
                 <li class="nav-item ms-lg-2 mt-2 mt-lg-0 d-none" id="nav-logout">
+                    <!--
+                        Al hacer clic se ejecuta cerrarSesion()
+                        desde app.js.
+                    -->
                     <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cerrarSesion()">Cerrar sesión</button>
                 </li>
             </ul>
@@ -62,47 +104,104 @@
 <!-- Aquí termina el menú -->
 
 
-<!-- Aquí empieza el formulario de registro -->
+<!-- =========================================================
+     FORMULARIO DE REGISTRO
+========================================================= -->
 <div class="container mt-5 mb-5">
+    <!-- Centra el formulario horizontalmente -->
     <div class="row justify-content-center">
+         <!--
+            En pantallas medianas el formulario ocupa
+            6 de las 12 columnas de Bootstrap.
+        -->
         <div class="col-md-6">
+            <!-- Card de Bootstrap para contener el formulario -->
             <div class="card">
                 <div class="card-body">
+                    <!-- Título del formulario -->
                     <h1 class="mb-4 text-center">Crear Cuenta</h1>
 
-                    <!-- Cuando se envía el formulario, se llama a la función validarRegistro() -->
+                    <!--
+                        Cuando el usuario presiona "Crear cuenta",
+                        se ejecuta validarRegistro() desde app.js.
+
+                        return evita que el formulario se envíe
+                        normalmente si JavaScript devuelve false.
+                    -->
                     <form onsubmit="return validarRegistro()">
 
-                        <!-- Campo de nombre -->
+                        <!-- =========================================
+                             NOMBRE
+                        ========================================== -->
                         <div class="mb-3">
                             <label for="registro-nombre" class="form-label">Nombre completo</label>
+                            <!--
+                                El id permite que JavaScript pueda
+                                obtener el valor ingresado.
+                            -->
                             <input type="text" class="form-control" id="registro-nombre">
+                            <!--
+                                Aquí JavaScript muestra un mensaje
+                                si el nombre no es válido.
+                            -->
                             <div class="text-danger" id="error-registro-nombre"></div>
                         </div>
 
-                        <!-- Campo de correo -->
+                         <!-- =========================================
+                             CORREO ELECTRÓNICO
+                        ========================================== -->
                         <div class="mb-3">
                             <label for="registro-email" class="form-label">Correo electrónico</label>
+                             <!--
+                                type="email" ayuda a comprobar
+                                que se ingrese un formato de correo.
+                            -->
                             <input type="email" class="form-control" id="registro-email">
+                             <!-- Mensaje de error del correo -->
                             <div class="text-danger" id="error-registro-email"></div>
                         </div>
 
-                        <!-- Campo de contraseña -->
+                        <!-- =========================================
+                             CONTRASEÑA
+                        ========================================== -->
                         <div class="mb-3">
                             <label for="registro-password" class="form-label">Contraseña</label>
+                            <!--
+                                type="password" oculta los caracteres
+                                mientras el usuario escribe.
+                            -->
                             <input type="password" class="form-control" id="registro-password">
+                            <!-- Mensaje de error de contraseña -->
                             <div class="text-danger" id="error-registro-password"></div>
                         </div>
 
-                        <!-- Campo para repetir la contraseña -->
+                        <!-- =========================================
+                             REPETIR CONTRASEÑA
+                        ========================================== -->
                         <div class="mb-3">
                             <label for="registro-password2" class="form-label">Repetir contraseña</label>
+                            <!--
+                                Este campo permite comparar las dos
+                                contraseñas antes de crear la cuenta.
+                            -->
                             <input type="password" class="form-control" id="registro-password2">
+                            <!--
+                                Aquí aparece el error si las
+                                contraseñas son diferentes.
+                            -->
                             <div class="text-danger" id="error-registro-password2"></div>
                         </div>
+                        <!--
+                            Botón que envía el formulario
+                            y ejecuta validarRegistro().
+                        -->
 
                         <button type="submit" class="btn btn-primary w-100">Crear cuenta</button>
                     </form>
+                     <!--
+                        Si el usuario ya tiene una cuenta,
+                        puede ir directamente al login.
+                    -->
 
                     <p class="text-center mt-3">
                         ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
@@ -115,10 +214,21 @@
 <!-- Aquí termina el formulario de registro -->
 
 
-<!-- Bootstrap 5 (JS) -->
+<!--
+    JavaScript de Bootstrap.
+    Permite que funcionen componentes interactivos,
+    como el menú responsive.
+-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
-<!-- Nuestro propio JavaScript -->
+<!--
+    JavaScript propio del proyecto.
+
+    Aquí se encuentran funciones como:
+    - validarRegistro()
+    - cerrarSesion()
+    - actualizarMenuUsuario()
+-->
 <script src="js/app.js"></script>
 </body>
 </html>
