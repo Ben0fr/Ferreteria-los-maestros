@@ -1,103 +1,84 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { buscarUsuario } from '../servicios/tienda'
+import { validarCorreo, validarClave } from '../utils/validaciones'
+import { useSesion } from '../context/useSesion'
 
+// Página de inicio de sesión
 const Login = () => {
-    // 1. Declaración estricta del estado para cada campo del formulario
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [errores, setErrores] = useState({})
 
-    // Estado para manejar los mensajes de error en la validación
-    const [errores, setErrores] = useState({});
+    const { iniciarSesion } = useSesion()
+    const navigate = useNavigate()
 
-    // 2. Función controladora del envío del formulario
-    const handleSubmit = (e) => {
-        // CRÍTICO: Previene que el navegador recargue la página, destruyendo la SPA
-        e.preventDefault();
+    // Valida los datos, busca al usuario y, si existe, inicia la sesión
+    const manejarEnvio = (e) => {
+        e.preventDefault()
 
-        const nuevosErrores = {};
+        const nuevosErrores = {}
 
-        // 3. Validación lógica sin tocar el DOM
-        if (!email) {
-            nuevosErrores.email = 'El correo electrónico es obligatorio.';
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            nuevosErrores.email = 'El formato del correo es inválido.';
+        if (!validarCorreo(email)) {
+            nuevosErrores.email = "El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com"
         }
 
-        if (!password) {
-            nuevosErrores.password = 'La contraseña es obligatoria.';
+        if (!validarClave(password)) {
+            nuevosErrores.password = "La contraseña debe tener entre 4 y 10 caracteres"
         }
 
-        // Si hay errores, actualizamos el estado para que React vuelva a renderizar y los muestre
         if (Object.keys(nuevosErrores).length > 0) {
-            setErrores(nuevosErrores);
-            return;
+            setErrores(nuevosErrores)
+            return
         }
 
-        // Si pasa la validación, limpiamos errores
-        setErrores({});
+        const usuario = buscarUsuario(email, password)
 
-        // Aquí, en el futuro, harás la petición a tu Backend en AWS
-        console.log('Datos listos para enviar al backend:', { email, password });
-        alert('Validación exitosa. Revisa la consola.');
-    };
+        if (usuario === null) {
+            setErrores({ password: "Correo o contraseña incorrectos" })
+            return
+        }
+
+        iniciarSesion(usuario)
+        alert("Bienvenido, " + usuario.nombre)
+        navigate('/')
+    }
 
     return (
-        <Container className="mt-5 mb-5">
-            <Row className="justify-content-center">
-                <Col md={6}>
-                    <Card>
-                        <Card.Body>
+        <div className="container mt-5 mb-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-body">
                             <h1 className="mb-4 text-center">Iniciar Sesión</h1>
 
-                            {/* El evento onSubmit reemplaza al onsubmit nativo */}
-                            <Form onSubmit={handleSubmit}>
+                            <form onSubmit={manejarEnvio} noValidate>
+                                <div className="mb-3">
+                                    <label htmlFor="login-email" className="form-label">Correo electrónico</label>
+                                    <input type="email" className="form-control" id="login-email"
+                                           value={email} onChange={(e) => setEmail(e.target.value)} />
+                                    <div className="text-danger">{errores.email}</div>
+                                </div>
 
-                                {/* Campo de Correo Electrónico */}
-                                <Form.Group className="mb-3" controlId="login-email">
-                                    <Form.Label>Correo electrónico</Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        placeholder="ejemplo@correo.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        isInvalid={!!errores.email}
-                                    />
-                                    {/* Renderizado condicional del error */}
-                                    <Form.Control.Feedback type="invalid">
-                                        {errores.email}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                                <div className="mb-3">
+                                    <label htmlFor="login-password" className="form-label">Contraseña</label>
+                                    <input type="password" className="form-control" id="login-password"
+                                           value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <div className="text-danger">{errores.password}</div>
+                                </div>
 
-                                {/* Campo de Contraseña */}
-                                <Form.Group className="mb-3" controlId="login-password">
-                                    <Form.Label>Contraseña</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Ingresa tu contraseña"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        isInvalid={!!errores.password}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errores.password}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-
-                                <Button variant="primary" type="submit" className="w-100">
-                                    Ingresar
-                                </Button>
-                            </Form>
+                                <button type="submit" className="btn btn-primary w-100">Ingresar</button>
+                            </form>
 
                             <p className="text-center mt-3">
                                 ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
                             </p>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
-    );
-};
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
 
-export default Login;
+export default Login

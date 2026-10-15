@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fc489700-71a3-4166-93a3-81970403afc5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/fase2/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/.oxlintrc.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/public/favicon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/public/icons.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/public/img/blog2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/public/img/images.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/App.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/assets/hero.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/assets/react.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/assets/vite.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/components/molecules/ProductoCard.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/components/molecules/UserForm.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/components/organisms/AdminSideBar.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/components/organisms/Footer.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/components/organisms/Navbar.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/estilos.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/main.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Admin.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/AdminProductos.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/AdminUsuarios.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Blog.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Carrito.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Contacto.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/DetalleBlog.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/DetalleProducto.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Home.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Login.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Nosotros.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Productos.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/src/pages/Registro.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fase2/vite.config.js" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="Integracion-carrito-de-compras" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Integracion-carrito-de-compras" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;maxvalenzuelaDev&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Ben0fr/Ferreteria-los-maestros.git&quot;,
+    &quot;accountId&quot;: &quot;18364269-c050-47a6-9b2b-4cf25e6f9893&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="0.001521882505722804" />
+      <entry key="MS500" value="0.8707089980476429" />
+      <entry key="S2" value="4.017011153161793" />
+      <entry key="S5" value="5.589270660862908" />
+      <entry key="S10" value="6.251936896131793" />
+      <entry key="S30" value="6.74285266538191" />
+      <entry key="S60" value="7.295979960655666" />
+      <entry key="M2" value="14.926934341522488" />
+      <entry key="M5" value="61.19674022167446" />
+      <entry key="M10" value="113.19398987626715" />
+      <entry key="M15" value="142.18684791959168" />
+      <entry key="M30" value="193.37977214088988" />
+      <entry key="H1" value="262.51844039170993" />
+      <entry key="H2" value="346.10735106901615" />
+      <entry key="H4" value="419.4253414560063" />
+      <entry key="D1" value="509.5858850261621" />
+      <entry key="W1" value="528.693007776346" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0000000000001275" />
+      <entry key="S30" value="1.000059177233896" />
+      <entry key="S60" value="1.0105332164766894" />
+      <entry key="M2" value="1.1607967305364275" />
+      <entry key="M5" value="1.9020157914732505" />
+      <entry key="M10" value="2.6506958089990986" />
+      <entry key="M15" value="3.093695594750671" />
+      <entry key="M30" value="4.111620853437225" />
+      <entry key="H1" value="5.699103305764332" />
+      <entry key="H2" value="7.490427325073311" />
+      <entry key="H4" value="8.936981918496025" />
+      <entry key="D1" value="10.601530355214527" />
+      <entry key="W1" value="10.941546256717984" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.004918519044563972" />
+      <entry key="MS500" value="1.1590233198947137" />
+      <entry key="S2" value="4.739286677846377" />
+      <entry key="S5" value="6.465830032074259" />
+      <entry key="S10" value="7.187910842492975" />
+      <entry key="S30" value="7.721029068573239" />
+      <entry key="S60" value="8.295284421993317" />
+      <entry key="M2" value="16.08034242153909" />
+      <entry key="M5" value="63.091855464783166" />
+      <entry key="M10" value="115.83909117028811" />
+      <entry key="M15" value="145.27595839664056" />
+      <entry key="M30" value="197.48808943168422" />
+      <entry key="H1" value="268.21496016272306" />
+      <entry key="H2" value="353.59585719171247" />
+      <entry key="H4" value="428.3610769359835" />
+      <entry key="D1" value="520.1871481582497" />
+      <entry key="W1" value="539.6345140463397" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3JIbIPmyLuvpA670l6mlFwvu3vL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "Integracion-carrito-de-compras",
+    "git.auto.fetch.suggestion.counter": "2",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/maxiv/IdeaProjects/Ferreteria-los-maestros",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "oracle"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\maxiv\IdeaProjects\Ferreteria-los-maestros" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10315.125" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10315.125" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fc489700-71a3-4166-93a3-81970403afc5" name="Changes" comment="" />
+      <created>1789351449160</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1789351449160</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/Integracion-carrito-de-compras" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

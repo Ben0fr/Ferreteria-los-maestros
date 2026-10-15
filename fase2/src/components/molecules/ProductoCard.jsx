@@ -1,36 +1,39 @@
-import React from 'react';
-import { Card, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import { agregarAlCarrito } from '../../servicios/tienda'
+import { formatearPrecio } from '../../utils/validaciones'
 
+// Tarjeta de un producto en el catálogo
 const ProductoCard = ({ producto }) => {
+    // Agrega el producto al carrito y avisa al usuario
+    const manejarAgregar = () => {
+        agregarAlCarrito(producto.id)
+        alert("Producto agregado al carrito")
+    }
+
     return (
-        <Card className="h-100 shadow-sm border-0">
-            {/* Marcador de imagen simulado */}
-            <div
-                className="bg-light d-flex justify-content-center align-items-center rounded-top"
-                style={{ height: '200px', fontSize: '3rem' }}
-            >
-                🛠️
-            </div>
-            <Card.Body className="d-flex flex-column">
-                <Card.Title className="fw-bold">{producto.nombre}</Card.Title>
-                <Card.Text className="text-primary fs-5 mb-4">
-                    ${producto.precio.toLocaleString('es-CL')}
-                </Card.Text>
+        <div className="col-md-4">
+            <div className="card h-100">
+                <div className="card-body text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <div className="fs-1 mb-2">{producto.icono}</div>
+                        <h5 className="card-title">{producto.nombre}</h5>
+                        <p className="card-text mb-1">Categoría: {producto.categoria}</p>
+                        <p className="card-text mb-1 fw-bold">Precio: ${formatearPrecio(producto.precio)}</p>
+                        <p className="card-text text-muted mb-3">Stock: {producto.stock} unidades</p>
+                    </div>
 
-                {/* El botón empuja hacia abajo para mantener todas las tarjetas alineadas */}
-                <div className="mt-auto d-grid gap-2">
-                    <Button variant="success" size="sm">
-                        🛒 Agregar al Carrito
-                    </Button>
-                    {/* Navegación dinámica hacia DetalleProducto.jsx */}
-                    <Button as={Link} to={`/productos/${producto.id}`} variant="outline-primary" size="sm">
-                        Ver detalle
-                    </Button>
+                    <div className="d-grid gap-2">
+                        <Link to={`/productos/${producto.id}`} className="btn btn-outline-secondary">
+                            Ver detalle
+                        </Link>
+                        <button type="button" className="btn btn-primary" onClick={manejarAgregar}>
+                            Agregar al carrito
+                        </button>
+                    </div>
                 </div>
-            </Card.Body>
-        </Card>
-    );
-};
+            </div>
+        </div>
+    )
+}
 
-export default ProductoCard;
+export default ProductoCard

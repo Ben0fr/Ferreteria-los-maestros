@@ -1,122 +1,258 @@
-import React, { useState } from 'react';
-import { Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { useState } from 'react'
+import AdminSidebar from '../components/organisms/AdminSidebar'
+import { categoriasAdmin } from '../data/productos'
+import {
+    obtenerProductosAdmin, crearProductoAdmin, editarProductoAdmin, eliminarProductoAdmin
+} from '../servicios/admin'
+import { formatearPrecio } from '../utils/validaciones'
 
-// Recibe la función 'onAddProduct' como prop desde el componente padre
-const ProductForm = ({ onAddProduct }) => {
-    // 1. Un solo estado en formato de objeto para manejar todos los inputs a la vez
-    const [formData, setFormData] = useState({
-        codigo: '',
-        nombre: '',
-        descripcion: '',
-        precio: '',
-        stock: '',
-        stockCritico: '',
-        categoria: ''
-    });
+// Valores iniciales (vacíos) del formulario de producto
+const formularioVacio = {
+    codigo: "", nombre: "", descripcion: "", precio: "", stock: "", stockCritico: "", categoria: ""
+}
 
-    // 2. Función dinámica para capturar lo que el usuario escribe
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prev) => ({ ...prev, [id]: value }));
-    };
+// Administración de productos: tabla, formulario de creación, editar y eliminar
+const AdminProductos = () => {
+    const [productos, setProductos] = useState(() => obtenerProductosAdmin())
+    const [mostrarForm, setMostrarForm] = useState(false)
+    const [datos, setDatos] = useState(formularioVacio)
 
-    // 3. Envío del formulario
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Crítico: Evita que la página se recargue
+    // Actualiza el campo que el usuario está escribiendo
+    const manejarCambio = (e) => {
+        setDatos({ ...datos, [e.target.name]: e.target.value })
+    }
 
-        // Le pasamos el nuevo producto al componente padre (AdminProductos)
-        onAddProduct({
-            id: Date.now(), // Generamos un ID único simulado
-            ...formData,
-            precio: parseFloat(formData.precio),
-            stock: parseInt(formData.stock)
-        });
+    // Valida el formulario y crea el producto nuevo
+    const guardarProducto = (e) => {
+        e.preventDefault()
 
-        // Vaciamos el formulario después de guardar
-        setFormData({
-            codigo: '', nombre: '', descripcion: '', precio: '', stock: '', stockCritico: '', categoria: ''
-        });
-        alert('Producto añadido con éxito (Simulado para la vista)');
-    };
+        if (
+            datos.codigo.trim() === "" || datos.nombre.trim() === "" ||
+            datos.precio === "" || datos.stock === "" || datos.categoria === ""
+        ) {
+            alert("Completa los campos obligatorios")
+            return
+        }
+
+        const precio = Number(datos.precio)
+        const stock = Number(datos.stock)
+
+        if (datos.codigo.trim().length < 3) {
+            alert("El código debe tener al menos 3 caracteres")
+            return
+        }
+
+        if (Number.isNaN(precio) || precio < 0 || !Number.isInteger(stock) || stock < 0) {
+            alert("El precio y el stock deben ser números válidos (stock entero, desde 0)")
+            return
+        }
+
+        if (productos.some((p) => p.codigo === datos.codigo.trim())) {
+            alert("Ya existe un producto con ese código")
+            return
+        }
+
+        const nuevoProducto = {
+            codigo: datos.codigo.trim(),
+            nombre: datos.nombre,
+            categoria: datos.categoria,
+            precio: precio,
+            stock: stock
+        }
+
+        setProductos([...crearProductoAdmin(nuevoProducto)])
+        setDatos(formularioVacio)
+        alert("Producto creado correctamente")
+
+        // Avisa si el stock ya está en el nivel crítico (o por debajo)
+        if (datos.stockCritico !== "" && stock <= Number(datos.stockCritico)) {
+            alert("Atención: el stock de este producto está en nivel crítico")
+        }
+    }
+
+    // Edita un producto pidiendo los datos nuevos con ventanas (prompt)
+    const editarProducto = (indice) => {
+        const producto = productos[indice]
+
+        const nuevoNombre = prompt("Nombre del producto:", producto.nombre)
+        if (nuevoNombre === null) return
+
+        const nuevaCategoria = prompt("Categoría:", producto.categoria)
+        if (nuevaCategoria === null) return
+
+        const nuevoPrecio = prompt("Precio:", producto.precio)
+        if (nuevoPrecio === null) return
+
+        const nuevoStock = prompt("Stock:", producto.stock)
+        if (nuevoStock === null) return
+
+        const precioNumero = Number(nuevoPrecio)
+        const stockNumero = Number(nuevoStock)
+
+        // Revisa que los datos sean válidos antes de guardar
+        if (
+            nuevoNombre.trim() === "" ||
+            Number.isNaN(precioNumero) || precioNumero < 0 ||
+            !Number.isInteger(stockNumero) || stockNumero < 0
+        ) {
+            alert("Los datos ingresados no son válidos")
+            return
+        }
+
+        setProductos([...editarProductoAdmin(indice, {
+            nombre: nuevoNombre,
+            categoria: nuevaCategoria,
+            precio: precioNumero,
+            stock: stockNumero
+        })])
+        alert("Producto modificado correctamente")
+    }
+
+    // Elimina un producto (pide confirmación antes)
+    const eliminarProducto = (indice) => {
+        const producto = productos[indice]
+
+        if (!confirm("¿Seguro que quieres eliminar " + producto.nombre + "?")) {
+            return
+        }
+
+        setProductos([...eliminarProductoAdmin(indice)])
+        alert("Producto eliminado correctamente")
+    }
 
     return (
-        <Card className="mb-5 shadow-sm border-0">
-            <Card.Body>
-                <h4 className="mb-4">Nuevo Producto</h4>
-                <Form onSubmit={handleSubmit}>
-                    <Row>
-                        <Col md={6} className="mb-3">
-                            {/* Nota: En React Bootstrap el 'id' se pasa al controlId del Form.Group */}
-                            <Form.Group controlId="codigo">
-                                <Form.Label>Código</Form.Label>
-                                <Form.Control type="text" minLength="3" required value={formData.codigo} onChange={handleChange} />
-                            </Form.Group>
-                        </Col>
-                        <Col md={6} className="mb-3">
-                            <Form.Group controlId="nombre">
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control type="text" maxLength="100" required value={formData.nombre} onChange={handleChange} />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+        <div className="container-fluid">
+            <div className="row min-vh-100">
+                <AdminSidebar />
 
-                    <Form.Group controlId="descripcion" className="mb-3">
-                        <Form.Label>Descripción</Form.Label>
-                        <Form.Control as="textarea" rows={3} maxLength="500" value={formData.descripcion} onChange={handleChange} />
-                    </Form.Group>
+                <main className="col-md-9 col-lg-10 p-4">
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1>Administrar Productos</h1>
+                            <p className="text-muted">Listado de productos disponibles en la tienda.</p>
+                        </div>
 
-                    <Row>
-                        <Col md={4} className="mb-3">
-                            <Form.Group controlId="precio">
-                                <Form.Label>Precio</Form.Label>
-                                <Form.Control type="number" min="0" step="0.01" required value={formData.precio} onChange={handleChange} />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4} className="mb-3">
-                            <Form.Group controlId="stock">
-                                <Form.Label>Stock</Form.Label>
-                                <Form.Control type="number" min="0" step="1" required value={formData.stock} onChange={handleChange} />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4} className="mb-3">
-                            <Form.Group controlId="stockCritico">
-                                <Form.Label>Stock Crítico</Form.Label>
-                                <Form.Control type="number" min="0" step="1" value={formData.stockCritico} onChange={handleChange} />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                        {/* Muestra u oculta el formulario */}
+                        <button className="btn btn-primary" type="button"
+                                onClick={() => setMostrarForm(!mostrarForm)}>
+                            Nuevo producto
+                        </button>
+                    </div>
 
-                    <Row>
-                        <Col md={6} className="mb-3">
-                            <Form.Group controlId="categoria">
-                                <Form.Label>Categoría</Form.Label>
-                                <Form.Select required value={formData.categoria} onChange={handleChange}>
-                                    <option value="">Seleccionar</option>
-                                    <option value="Herramientas manuales">Herramientas manuales</option>
-                                    <option value="Herramientas eléctricas">Herramientas eléctricas</option>
-                                    <option value="Materiales de construcción">Materiales de construcción</option>
-                                    <option value="Pinturas">Pinturas</option>
-                                    <option value="Seguridad y EPP">Seguridad y EPP</option>
-                                    <option value="Ferretería general">Ferretería general</option>
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                        <Col md={6} className="mb-3">
-                            <Form.Group controlId="imagen">
-                                <Form.Label>Imagen</Form.Label>
-                                {/* Los inputs de tipo file no se controlan con 'value' en React básico */}
-                                <Form.Control type="file" />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                    {/* Formulario de nuevo producto */}
+                    {mostrarForm && (
+                        <div className="mb-5">
+                            <div className="card">
+                                <div className="card-body">
+                                    <h4 className="mb-4">Nuevo Producto</h4>
 
-                    <Button variant="primary" type="submit">
-                        Guardar producto
-                    </Button>
-                </Form>
-            </Card.Body>
-        </Card>
-    );
-};
+                                    <form onSubmit={guardarProducto}>
+                                        <div className="row">
+                                            <div className="col-md-6 mb-3">
+                                                <label htmlFor="admin-producto-codigo" className="form-label">Código</label>
+                                                <input type="text" className="form-control" id="admin-producto-codigo"
+                                                       name="codigo" minLength={3} value={datos.codigo}
+                                                       onChange={manejarCambio} required />
+                                            </div>
+                                            <div className="col-md-6 mb-3">
+                                                <label htmlFor="admin-producto-nombre" className="form-label">Nombre</label>
+                                                <input type="text" className="form-control" id="admin-producto-nombre"
+                                                       name="nombre" maxLength={100} value={datos.nombre}
+                                                       onChange={manejarCambio} required />
+                                            </div>
+                                        </div>
 
-export default ProductForm;
+                                        <div className="mb-3">
+                                            <label htmlFor="admin-producto-descripcion" className="form-label">Descripción</label>
+                                            <textarea className="form-control" id="admin-producto-descripcion"
+                                                      name="descripcion" maxLength={500} rows={3}
+                                                      value={datos.descripcion} onChange={manejarCambio}></textarea>
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-md-4 mb-3">
+                                                <label htmlFor="admin-producto-precio" className="form-label">Precio</label>
+                                                <input type="number" className="form-control" id="admin-producto-precio"
+                                                       name="precio" min={0} step={0.01} value={datos.precio}
+                                                       onChange={manejarCambio} required />
+                                            </div>
+                                            <div className="col-md-4 mb-3">
+                                                <label htmlFor="admin-producto-stock" className="form-label">Stock</label>
+                                                <input type="number" className="form-control" id="admin-producto-stock"
+                                                       name="stock" min={0} step={1} value={datos.stock}
+                                                       onChange={manejarCambio} required />
+                                            </div>
+                                            <div className="col-md-4 mb-3">
+                                                <label htmlFor="admin-producto-stock-critico" className="form-label">Stock crítico</label>
+                                                <input type="number" className="form-control" id="admin-producto-stock-critico"
+                                                       name="stockCritico" min={0} step={1} value={datos.stockCritico}
+                                                       onChange={manejarCambio} />
+                                            </div>
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-md-6 mb-3">
+                                                <label htmlFor="admin-producto-categoria" className="form-label">Categoría</label>
+                                                <select className="form-select" id="admin-producto-categoria"
+                                                        name="categoria" value={datos.categoria}
+                                                        onChange={manejarCambio} required>
+                                                    <option value="">Seleccionar</option>
+                                                    {categoriasAdmin.map((categoria) => (
+                                                        <option key={categoria} value={categoria}>{categoria}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="col-md-6 mb-3">
+                                                <label htmlFor="admin-producto-imagen" className="form-label">Imagen</label>
+                                                <input type="file" className="form-control" id="admin-producto-imagen" />
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" className="btn btn-primary">Guardar producto</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Tabla de productos */}
+                    <div className="table-responsive">
+                        <table className="table table-striped table-bordered align-middle">
+                            <thead className="table-dark">
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {productos.map((producto, i) => (
+                                    <tr key={producto.codigo}>
+                                        <td>{producto.codigo}</td>
+                                        <td>{producto.nombre}</td>
+                                        <td>{producto.categoria}</td>
+                                        <td>${formatearPrecio(producto.precio)}</td>
+                                        <td>{producto.stock}</td>
+                                        <td>
+                                            <button className="btn btn-sm btn-warning me-1" onClick={() => editarProducto(i)}>
+                                                Editar
+                                            </button>
+                                            <button className="btn btn-sm btn-danger" onClick={() => eliminarProducto(i)}>
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </div>
+        </div>
+    )
+}
+
+export default AdminProductos

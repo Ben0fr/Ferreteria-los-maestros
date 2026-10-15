@@ -1,145 +1,99 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { registrarUsuario } from '../servicios/tienda'
+import { validarCorreo, validarClave } from '../utils/validaciones'
 
+// Página para crear una cuenta nueva
 const Registro = () => {
-    // 1. Estados independientes para cada campo del formulario
-    const [nombre, setNombre] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordConfirm, setPasswordConfirm] = useState('');
+    const [nombre, setNombre] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [password2, setPassword2] = useState('')
+    const [errores, setErrores] = useState({})
 
-    // Estado para capturar y mostrar los errores
-    const [errores, setErrores] = useState({});
+    const navigate = useNavigate()
 
-    // 2. Función de validación y envío sin recargar la página
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const nuevosErrores = {};
+    // Valida todos los campos y, si están bien, guarda el usuario
+    const manejarEnvio = (e) => {
+        e.preventDefault()
 
-        // Validaciones estrictas
-        if (!nombre.trim()) {
-            nuevosErrores.nombre = 'El nombre completo es obligatorio.';
+        const nuevosErrores = {}
+
+        if (nombre.trim() === "") {
+            nuevosErrores.nombre = "Debes ingresar tu nombre"
         }
 
-        if (!email) {
-            nuevosErrores.email = 'El correo electrónico es obligatorio.';
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            nuevosErrores.email = 'El formato del correo es inválido.';
+        if (!validarCorreo(email)) {
+            nuevosErrores.email = "El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com"
         }
 
-        if (!password) {
-            nuevosErrores.password = 'La contraseña es obligatoria.';
-        } else if (password.length < 6) {
-            nuevosErrores.password = 'La contraseña debe tener al menos 6 caracteres.';
+        if (!validarClave(password)) {
+            nuevosErrores.password = "La contraseña debe tener entre 4 y 10 caracteres"
         }
 
-        if (!passwordConfirm) {
-            nuevosErrores.passwordConfirm = 'Debes repetir la contraseña.';
-        } else if (password !== passwordConfirm) {
-            nuevosErrores.passwordConfirm = 'Las contraseñas no coinciden.';
+        if (password !== password2) {
+            nuevosErrores.password2 = "Las contraseñas no coinciden"
         }
 
-        // Si el objeto de errores tiene propiedades, detenemos el envío y los mostramos
         if (Object.keys(nuevosErrores).length > 0) {
-            setErrores(nuevosErrores);
-            return;
+            setErrores(nuevosErrores)
+            return
         }
 
-        // Si todo es correcto, limpiamos errores
-        setErrores({});
-
-        // Simulación de envío exitoso
-        console.log('Nuevo usuario registrado:', { nombre, email, password });
-        alert('Cuenta creada exitosamente. Revisa la consola.');
-
-        // Aquí podrías usar useNavigate() de react-router-dom para redirigir al /login automáticamente
-    };
+        registrarUsuario(nombre, email, password)
+        alert("Cuenta creada con éxito. Ahora inicia sesión.")
+        navigate('/login')
+    }
 
     return (
-        <Container className="mt-5 mb-5">
-            <Row className="justify-content-center">
-                <Col md={6}>
-                    <Card>
-                        <Card.Body>
+        <div className="container mt-5 mb-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-body">
                             <h1 className="mb-4 text-center">Crear Cuenta</h1>
 
-                            <Form onSubmit={handleSubmit}>
+                            <form onSubmit={manejarEnvio} noValidate>
+                                <div className="mb-3">
+                                    <label htmlFor="registro-nombre" className="form-label">Nombre completo</label>
+                                    <input type="text" className="form-control" id="registro-nombre"
+                                           value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                                    <div className="text-danger">{errores.nombre}</div>
+                                </div>
 
-                                {/* Campo de Nombre */}
-                                <Form.Group className="mb-3" controlId="registro-nombre">
-                                    <Form.Label>Nombre completo</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Ej: Juan Pérez"
-                                        value={nombre}
-                                        onChange={(e) => setNombre(e.target.value)}
-                                        isInvalid={!!errores.nombre}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errores.nombre}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                                <div className="mb-3">
+                                    <label htmlFor="registro-email" className="form-label">Correo electrónico</label>
+                                    <input type="email" className="form-control" id="registro-email"
+                                           value={email} onChange={(e) => setEmail(e.target.value)} />
+                                    <div className="text-danger">{errores.email}</div>
+                                </div>
 
-                                {/* Campo de Correo */}
-                                <Form.Group className="mb-3" controlId="registro-email">
-                                    <Form.Label>Correo electrónico</Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        placeholder="ejemplo@correo.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        isInvalid={!!errores.email}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errores.email}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                                <div className="mb-3">
+                                    <label htmlFor="registro-password" className="form-label">Contraseña</label>
+                                    <input type="password" className="form-control" id="registro-password"
+                                           value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <div className="text-danger">{errores.password}</div>
+                                </div>
 
-                                {/* Campo de Contraseña */}
-                                <Form.Group className="mb-3" controlId="registro-password">
-                                    <Form.Label>Contraseña</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Ingresa tu contraseña"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        isInvalid={!!errores.password}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errores.password}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                                <div className="mb-3">
+                                    <label htmlFor="registro-password2" className="form-label">Repetir contraseña</label>
+                                    <input type="password" className="form-control" id="registro-password2"
+                                           value={password2} onChange={(e) => setPassword2(e.target.value)} />
+                                    <div className="text-danger">{errores.password2}</div>
+                                </div>
 
-                                {/* Campo de Repetir Contraseña */}
-                                <Form.Group className="mb-3" controlId="registro-passwordConfirm">
-                                    <Form.Label>Repetir contraseña</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Repite tu contraseña"
-                                        value={passwordConfirm}
-                                        onChange={(e) => setPasswordConfirm(e.target.value)}
-                                        isInvalid={!!errores.passwordConfirm}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errores.passwordConfirm}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-
-                                <Button variant="primary" type="submit" className="w-100">
-                                    Crear cuenta
-                                </Button>
-                            </Form>
+                                <button type="submit" className="btn btn-primary w-100">Crear cuenta</button>
+                            </form>
 
                             <p className="text-center mt-3">
                                 ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
                             </p>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
-    );
-};
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
 
-export default Registro;
+export default Registro
