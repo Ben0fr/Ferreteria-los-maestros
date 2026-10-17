@@ -4,6 +4,7 @@ module.exports = function (config) {
     plugins: [
       'karma-vite',
       'karma-jasmine',
+      'karma-edge-launcher',
       'karma-chrome-launcher',
       'karma-coverage'
     ],
@@ -34,7 +35,7 @@ module.exports = function (config) {
         { type: 'text' }
       ]
     },
-    browsers: ['ChromeHeadless'],
+    browsers: ['Edge'],
     singleRun: true
   });
 };
