@@ -18,7 +18,7 @@ const Admin = () => {
                         <div className="col-md-6 mb-4">
                             <div className="card h-100">
                                 <div className="card-body text-center">
-                                    <div className="fs-1 mb-3">📦</div>
+                                    <img src="/img/icons/caja.svg" alt="Productos" className="icono-img mb-3" />
                                     <h3>Productos</h3>
                                     <p className="text-muted">Visualiza y administra los productos disponibles en la tienda.</p>
                                     <Link to="/admin/productos" className="btn btn-primary">Gestionar productos</Link>
@@ -29,7 +29,7 @@ const Admin = () => {
                         <div className="col-md-6 mb-4">
                             <div className="card h-100">
                                 <div className="card-body text-center">
-                                    <div className="fs-1 mb-3">👥</div>
+                                    <img src="/img/icons/usuarios.svg" alt="Usuarios" className="icono-img mb-3" />
                                     <h3>Usuarios</h3>
                                     <p className="text-muted">Visualiza y administra los usuarios del sistema.</p>
                                     <Link to="/admin/usuarios" className="btn btn-primary">Gestionar usuarios</Link>

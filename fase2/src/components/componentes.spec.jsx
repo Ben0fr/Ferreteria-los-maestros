@@ -9,7 +9,7 @@ import { obtenerCarrito, guardarUsuarioActual, obtenerUsuarioActual } from '../s
 
 const producto = {
     id: 1, codigo: 'MAR001', nombre: 'Martillo Carpintero', categoria: 'Herramientas manuales',
-    categoriaSlug: 'manuales', precio: 6990, stock: 25, icono: '🔨'
+    categoriaSlug: 'manuales', precio: 6990, stock: 25, icono: 'martillo.svg'
 }
 
 describe('ProductoCard', () => {

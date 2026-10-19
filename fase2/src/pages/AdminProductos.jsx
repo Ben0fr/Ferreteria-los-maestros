@@ -218,7 +218,7 @@ const AdminProductos = () => {
                     {/* Tabla de productos */}
                     <div className="table-responsive">
                         <table className="table table-striped table-bordered align-middle">
-                            <thead className="table-dark">
+                            <thead className="tabla-header-ferreteria">
                                 <tr>
                                     <th>Código</th>
                                     <th>Producto</th>

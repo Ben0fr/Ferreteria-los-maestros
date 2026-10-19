@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom'
 
 import NavigationBar from './components/organisms/Navbar'
 import Footer from './components/organisms/Footer'
+import { useSesion } from './context/useSesion'
 
 import Home from './pages/Home'
 import Nosotros from './pages/Nosotros'
@@ -29,6 +30,17 @@ const PublicLayout = () => {
     )
 }
 
+// Solo deja pasar al panel de administración si hay una sesión de administrador iniciada
+const RutaAdmin = () => {
+    const { usuario } = useSesion()
+
+    if (usuario === null || usuario.tipo !== 'Administrador') {
+        return <Navigate to="/login" replace />
+    }
+
+    return <Outlet />
+}
+
 // Define todas las rutas (páginas) del sitio
 const App = () => {
     return (
@@ -48,10 +60,12 @@ const App = () => {
                     <Route path="/blog/:id" element={<DetalleBlog />} />
                 </Route>
 
-                {/* Panel de administración (pantalla completa con su menú lateral) */}
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/productos" element={<AdminProductos />} />
-                <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+                {/* Panel de administración (pantalla completa con su menú lateral), solo para administradores */}
+                <Route element={<RutaAdmin />}>
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/admin/productos" element={<AdminProductos />} />
+                    <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+                </Route>
             </Routes>
         </BrowserRouter>
     )

@@ -15,8 +15,16 @@ const Home = () => {
                             <Link className="btn btn-primary btn-lg" to="/productos">Ver productos</Link>
                         </div>
                         <div className="col-md-5 text-center mt-4 mt-md-0">
-                            <div className="fs-1">🔨 🔧 🪛</div>
-                            <div className="fs-1">🧱 🎨 🦺</div>
+                            <div>
+                                <img src="/img/icons/martillo.svg" alt="Martillo" className="icono-hero" />
+                                <img src="/img/icons/llave.svg" alt="Llave" className="icono-hero" />
+                                <img src="/img/icons/destornillador.svg" alt="Destornillador" className="icono-hero" />
+                            </div>
+                            <div>
+                                <img src="/img/icons/ladrillos.svg" alt="Materiales de construcción" className="icono-hero" />
+                                <img src="/img/icons/pintura.svg" alt="Pintura" className="icono-hero" />
+                                <img src="/img/icons/guante.svg" alt="Guantes de seguridad" className="icono-hero" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -31,7 +39,7 @@ const Home = () => {
                             <Link to={`/productos?categoria=${categoria.slug}`} className="text-decoration-none text-reset">
                                 <div className="card">
                                     <div className="card-body text-center">
-                                        <div className="fs-1">{categoria.icono}</div>
+                                        <img src={`/img/icons/${categoria.icono}`} alt={categoria.titulo} className="icono-img" />
                                         <h5 className="card-title">{categoria.titulo}</h5>
                                     </div>
                                 </div>
@@ -47,27 +55,27 @@ const Home = () => {
                 <div className="row">
                     <div className="col-md-4">
                         <div className="card">
-                            <div className="card-body">
-                                <div className="fs-1 text-center">📦</div>
-                                <h5 className="card-title text-center">Stock real</h5>
+                            <div className="card-body text-center">
+                                <img src="/img/icons/caja.svg" alt="Stock real" className="icono-img mb-2" />
+                                <h5 className="card-title">Stock real</h5>
                                 <p className="card-text">Lo que ves en la página es lo que hay en la tienda, sin sorpresas.</p>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card">
-                            <div className="card-body">
-                                <div className="fs-1 text-center">🔧</div>
-                                <h5 className="card-title text-center">Asesoría técnica</h5>
+                            <div className="card-body text-center">
+                                <img src="/img/icons/llave.svg" alt="Asesoría técnica" className="icono-img mb-2" />
+                                <h5 className="card-title">Asesoría técnica</h5>
                                 <p className="card-text">Te ayudamos a elegir el material o la herramienta correcta.</p>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card">
-                            <div className="card-body">
-                                <div className="fs-1 text-center">🚚</div>
-                                <h5 className="card-title text-center">Despacho a todo Chile</h5>
+                            <div className="card-body text-center">
+                                <img src="/img/icons/camion.svg" alt="Despacho a todo Chile" className="icono-img mb-2" />
+                                <h5 className="card-title">Despacho a todo Chile</h5>
                                 <p className="card-text">Retira en tienda o recibe tu pedido donde estés trabajando.</p>
                             </div>
                         </div>

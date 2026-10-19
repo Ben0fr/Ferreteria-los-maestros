@@ -1,8 +1,8 @@
 // Pruebas unitarias de la lógica de negocio: catálogo, carrito, usuarios y panel admin
 import {
     obtenerProductos, buscarProductoPorId,
-    obtenerCarrito, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito,
-    buscarUsuario, registrarUsuario,
+    obtenerCarrito, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito, realizarCompra,
+    buscarUsuario, buscarAdministrador, registrarUsuario,
     obtenerUsuarioActual, guardarUsuarioActual, borrarUsuarioActual
 } from './tienda'
 import {
@@ -85,6 +85,39 @@ describe('servicios/tienda - usuarios y sesión', () => {
         expect(obtenerUsuarioActual().nombre).toBe('Ana')
         borrarUsuarioActual()
         expect(obtenerUsuarioActual()).toBeNull()
+    })
+
+    it('buscarAdministrador reconoce las credenciales del administrador', () => {
+        expect(buscarAdministrador('admin@gmail.com', 'admin123').tipo).toBe('Administrador')
+    })
+
+    it('buscarAdministrador rechaza credenciales incorrectas', () => {
+        expect(buscarAdministrador('admin@gmail.com', 'mala')).toBeNull()
+        expect(buscarAdministrador('otro@gmail.com', 'admin123')).toBeNull()
+    })
+})
+
+describe('servicios/tienda - compra', () => {
+    beforeEach(() => localStorage.clear())
+
+    it('realizarCompra falla si el carrito está vacío', () => {
+        expect(realizarCompra().ok).toBe(false)
+    })
+
+    it('realizarCompra descuenta el stock comprado y vacía el carrito', () => {
+        agregarAlCarrito(1, 2)
+        const resultado = realizarCompra()
+        expect(resultado.ok).toBe(true)
+        expect(buscarProductoPorId(1).stock).toBe(23)
+        expect(obtenerCarrito()).toEqual([])
+    })
+
+    it('realizarCompra falla y no modifica nada si no hay stock suficiente', () => {
+        agregarAlCarrito(1, 999)
+        const resultado = realizarCompra()
+        expect(resultado.ok).toBe(false)
+        expect(buscarProductoPorId(1).stock).toBe(25)
+        expect(obtenerCarrito().length).toBe(1)
     })
 })
 

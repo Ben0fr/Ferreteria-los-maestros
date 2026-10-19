@@ -1,6 +1,7 @@
 // Lógica de la tienda: catálogo, carrito y usuarios (equivale al app.js de la fase 1)
 import { productosBase } from "../data/productos"
 import { leerJSON, guardarJSON, borrarClave } from "../utils/almacenamiento"
+import { obtenerProductosAdmin, guardarProductosAdmin } from "./admin"
 
 // Nombres con los que se guardan los datos en localStorage (iguales a la fase 1)
 const CLAVE_CARRITO = "carritoFerreteria"
@@ -8,6 +9,24 @@ const CLAVE_USUARIOS = "usuariosFerreteria"
 const CLAVE_USUARIO_ACTUAL = "usuarioActualFerreteria"
 const CLAVE_PRODUCTOS_ADMIN = "productosAdminFerreteria"
 const CLAVE_ELIMINADOS = "productosEliminadosAdmin"
+
+// Credenciales fijas para ingresar como administrador desde el login
+const CREDENCIALES_ADMIN = { correo: "admin@gmail.com", clave: "admin123" }
+
+// Quienes escuchan cambios en el carrito (por ejemplo, el contador del menú)
+const listenersCarrito = new Set()
+
+function notificarCarrito() {
+    for (const escuchar of listenersCarrito) {
+        escuchar()
+    }
+}
+
+// Permite que un componente se avise cuando el carrito cambia; devuelve una función para dejar de escuchar
+export function suscribirCarrito(escuchar) {
+    listenersCarrito.add(escuchar)
+    return () => listenersCarrito.delete(escuchar)
+}
 
 // ---------------- CATÁLOGO ----------------
 
@@ -36,7 +55,7 @@ export function obtenerProductos() {
                     categoriaSlug: "general",
                     precio: productoAdmin.precio,
                     stock: productoAdmin.stock,
-                    icono: "🧰"
+                    icono: "caja-herramientas.svg"
                 })
             }
         }
@@ -59,30 +78,75 @@ export function obtenerCarrito() {
     return leerJSON(CLAVE_CARRITO, [])
 }
 
-// Agrega un producto al carrito (si ya estaba, suma 1 a la cantidad)
-export function agregarAlCarrito(id) {
+// Suma la cantidad de todos los productos del carrito (para el contador del menú)
+export function obtenerCantidadCarrito() {
+    return obtenerCarrito().reduce((total, item) => total + item.cantidad, 0)
+}
+
+// Agrega un producto al carrito (si ya estaba, suma la cantidad indicada)
+export function agregarAlCarrito(id, cantidad = 1) {
     const carrito = obtenerCarrito()
     const item = carrito.find((i) => i.id === id)
 
     if (item) {
-        item.cantidad = item.cantidad + 1
+        item.cantidad = item.cantidad + cantidad
     } else {
-        carrito.push({ id: id, cantidad: 1 })
+        carrito.push({ id: id, cantidad: cantidad })
     }
 
     guardarJSON(CLAVE_CARRITO, carrito)
+    notificarCarrito()
 }
 
 // Quita del carrito el producto con ese id y devuelve el carrito nuevo
 export function eliminarDelCarrito(id) {
     const carritoNuevo = obtenerCarrito().filter((i) => i.id !== id)
     guardarJSON(CLAVE_CARRITO, carritoNuevo)
+    notificarCarrito()
     return carritoNuevo
 }
 
 // Deja el carrito completamente vacío
 export function vaciarCarrito() {
     borrarClave(CLAVE_CARRITO)
+    notificarCarrito()
+}
+
+// Confirma la compra de lo que hay en el carrito: revisa el stock, lo descuenta y vacía el carrito
+export function realizarCompra() {
+    const carrito = obtenerCarrito()
+
+    if (carrito.length === 0) {
+        return { ok: false, mensaje: "El carrito está vacío" }
+    }
+
+    // Primero se revisa que haya stock suficiente para todo, antes de descontar nada
+    for (const item of carrito) {
+        const producto = buscarProductoPorId(item.id)
+
+        if (producto === undefined || producto.stock < item.cantidad) {
+            const nombre = producto ? producto.nombre : "un producto"
+            return { ok: false, mensaje: `No hay stock suficiente de ${nombre}` }
+        }
+    }
+
+    // Descuenta el stock comprado junto a los productos del administrador: así el nuevo
+    // stock se ve igual tanto para los clientes como en el panel de administración
+    const productosAdmin = obtenerProductosAdmin()
+
+    for (const item of carrito) {
+        const producto = buscarProductoPorId(item.id)
+        const productoAdmin = productosAdmin.find((p) => p.codigo === producto.codigo)
+
+        if (productoAdmin) {
+            productoAdmin.stock = productoAdmin.stock - item.cantidad
+        }
+    }
+
+    guardarProductosAdmin(productosAdmin)
+    vaciarCarrito()
+
+    return { ok: true, mensaje: "¡Compra realizada con éxito! Gracias por tu compra." }
 }
 
 // ---------------- USUARIOS ----------------
@@ -91,7 +155,16 @@ export function vaciarCarrito() {
 export function buscarUsuario(correo, clave) {
     const usuarios = leerJSON(CLAVE_USUARIOS, [])
     const encontrado = usuarios.find((u) => u.correo === correo && u.clave === clave)
-    return encontrado || null
+    return encontrado ? { ...encontrado, tipo: "Cliente" } : null
+}
+
+// Revisa las credenciales fijas de administrador (no se guardan junto a los clientes)
+export function buscarAdministrador(correo, clave) {
+    if (correo === CREDENCIALES_ADMIN.correo && clave === CREDENCIALES_ADMIN.clave) {
+        return { nombre: "Administrador", correo: correo, tipo: "Administrador" }
+    }
+
+    return null
 }
 
 // Guarda un usuario nuevo creado desde la página de registro

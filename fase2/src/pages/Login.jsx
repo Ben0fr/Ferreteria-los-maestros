@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { buscarUsuario } from '../servicios/tienda'
+import { buscarUsuario, buscarAdministrador } from '../servicios/tienda'
 import { validarCorreo, validarClave } from '../utils/validaciones'
 import { useSesion } from '../context/useSesion'
 
@@ -8,12 +8,13 @@ import { useSesion } from '../context/useSesion'
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [tipoIngreso, setTipoIngreso] = useState('cliente')
     const [errores, setErrores] = useState({})
 
     const { iniciarSesion } = useSesion()
     const navigate = useNavigate()
 
-    // Valida los datos, busca al usuario y, si existe, inicia la sesión
+    // Valida los datos y, según el tipo de ingreso elegido, busca al cliente o al administrador
     const manejarEnvio = (e) => {
         e.preventDefault()
 
@@ -29,6 +30,20 @@ const Login = () => {
 
         if (Object.keys(nuevosErrores).length > 0) {
             setErrores(nuevosErrores)
+            return
+        }
+
+        if (tipoIngreso === 'administrador') {
+            const administrador = buscarAdministrador(email, password)
+
+            if (administrador === null) {
+                setErrores({ password: "Correo o contraseña de administrador incorrectos" })
+                return
+            }
+
+            iniciarSesion(administrador)
+            alert("Bienvenido, " + administrador.nombre)
+            navigate('/admin')
             return
         }
 
@@ -51,6 +66,17 @@ const Login = () => {
                     <div className="card">
                         <div className="card-body">
                             <h1 className="mb-4 text-center">Iniciar Sesión</h1>
+
+                            {/* Elige si quiere ingresar como cliente o como administrador */}
+                            <div className="btn-group w-100 mb-4" role="group" aria-label="Tipo de ingreso">
+                                <input type="radio" className="btn-check" name="tipoIngreso" id="ingreso-cliente"
+                                       checked={tipoIngreso === 'cliente'} onChange={() => setTipoIngreso('cliente')} />
+                                <label className="btn btn-outline-primary" htmlFor="ingreso-cliente">Cliente</label>
+
+                                <input type="radio" className="btn-check" name="tipoIngreso" id="ingreso-admin"
+                                       checked={tipoIngreso === 'administrador'} onChange={() => setTipoIngreso('administrador')} />
+                                <label className="btn btn-outline-primary" htmlFor="ingreso-admin">Administrador</label>
+                            </div>
 
                             <form onSubmit={manejarEnvio} noValidate>
                                 <div className="mb-3">

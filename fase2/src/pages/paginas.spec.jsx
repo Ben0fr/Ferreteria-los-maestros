@@ -8,7 +8,8 @@ import DetalleProducto from './DetalleProducto'
 import Carrito from './Carrito'
 import { SesionProvider } from '../context/SesionProvider'
 import {
-    registrarUsuario, buscarUsuario, obtenerUsuarioActual, obtenerCarrito, agregarAlCarrito
+    registrarUsuario, buscarUsuario, obtenerUsuarioActual, obtenerCarrito, agregarAlCarrito,
+    guardarUsuarioActual, buscarProductoPorId
 } from '../servicios/tienda'
 
 // Envía el formulario que contiene el botón indicado
@@ -61,6 +62,26 @@ describe('Login', () => {
         expect(alertSpy).toHaveBeenCalledWith('Bienvenido, Ana')
         expect(obtenerUsuarioActual().nombre).toBe('Ana')
         expect(screen.getByText('PAGINA INICIO')).toBeTruthy()
+    })
+
+    it('permite iniciar sesión como administrador y redirige al panel admin', () => {
+        const alertSpy = spyOn(window, 'alert')
+        render(
+            <MemoryRouter initialEntries={['/login']}>
+                <SesionProvider>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/admin" element={<div>PANEL ADMIN</div>} />
+                    </Routes>
+                </SesionProvider>
+            </MemoryRouter>
+        )
+        fireEvent.click(screen.getByLabelText('Administrador'))
+        fireEvent.change(screen.getByLabelText('Correo electrónico'), { target: { value: 'admin@gmail.com' } })
+        fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'admin123' } })
+        enviarFormulario('Ingresar')
+        expect(alertSpy).toHaveBeenCalledWith('Bienvenido, Administrador')
+        expect(screen.getByText('PANEL ADMIN')).toBeTruthy()
     })
 })
 
@@ -172,7 +193,13 @@ describe('Carrito', () => {
         agregarAlCarrito(3)
     })
 
-    const renderCarrito = () => render(<MemoryRouter><Carrito /></MemoryRouter>)
+    const renderCarrito = () => render(
+        <MemoryRouter>
+            <SesionProvider>
+                <Carrito />
+            </SesionProvider>
+        </MemoryRouter>
+    )
     const totalMostrado = () => document.getElementById('total-carrito').textContent
 
     it('muestra los productos guardados con su cantidad', () => {
@@ -207,5 +234,23 @@ describe('Carrito', () => {
         localStorage.setItem('carritoFerreteria', JSON.stringify([{ id: 999, cantidad: 1 }]))
         renderCarrito()
         expect(screen.getByText(/El carrito está vacío/)).toBeTruthy()
+    })
+
+    it('al intentar comprar sin sesión iniciada muestra un aviso con acceso al login', () => {
+        renderCarrito()
+        fireEvent.click(screen.getByText('Comprar'))
+        expect(screen.getByText('Debes iniciar sesión para poder comprar.')).toBeTruthy()
+        expect(screen.getByText('Iniciar sesión').closest('a').getAttribute('href')).toBe('/login')
+    })
+
+    it('comprar con sesión iniciada descuenta el stock y vacía el carrito', () => {
+        const alertSpy = spyOn(window, 'alert')
+        guardarUsuarioActual({ nombre: 'Ana', correo: 'ana@gmail.com', tipo: 'Cliente' })
+        renderCarrito()
+        fireEvent.click(screen.getByText('Comprar'))
+        expect(alertSpy).toHaveBeenCalledWith('¡Compra realizada con éxito! Gracias por tu compra.')
+        expect(obtenerCarrito()).toEqual([])
+        expect(buscarProductoPorId(1).stock).toBe(23)
+        expect(buscarProductoPorId(3).stock).toBe(39)
     })
 })

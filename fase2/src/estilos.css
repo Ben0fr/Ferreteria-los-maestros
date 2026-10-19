@@ -1,89 +1,221 @@
 /* ============================================
    Estilos de Ferretería Los Maestros
-   Este archivo es corto a propósito: solo
-   cambiamos colores y algunos márgenes,
-   el resto lo hace Bootstrap.
+   Paleta clara y cálida, pensada para que la
+   página se vea más viva y profesional.
+   El resto lo hace Bootstrap.
    ============================================ */
+
+:root {
+    --color-primario: #ec6a1f;
+    --color-primario-oscuro: #c8550f;
+    --color-secundario: #2b8a99;
+    --color-texto: #3a332c;
+    --color-fondo: #fbf7f2;
+    --color-fondo-alt: #eef7f8;
+    --color-borde: #f1dfca;
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+}
 
 /* Cambiamos el color de los botones principales a naranjo */
 .btn-primary {
-    background-color: #e85d04;
-    border-color: #e85d04;
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
 }
 
 /* Color un poco más oscuro cuando el mouse pasa por encima del botón */
-.btn-primary:hover {
-    background-color: #c24c02;
-    border-color: #c24c02;
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--color-primario-oscuro);
+    border-color: var(--color-primario-oscuro);
 }
 
 /* El nombre de la ferretería en el menú también queda naranjo */
 .navbar-brand {
-    color: #e85d04;
+    color: var(--color-primario);
     font-weight: bold;
 }
 
+.navbar-light {
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
 
-/*Un poco de espacio abajo de cada tarjeta para que no queden pegadas */
+/* Un poco de espacio y un borde suave para que las tarjetas no se vean pegadas ni planas */
 .card {
     margin-bottom: 15px;
     margin-top: 15px;
+    border: 1px solid var(--color-borde);
+    border-radius: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/*Estilo de las tarjetas que muestran los productos del carrito*/
-#contenedor-carrito .card{
-    border:none;
-    border-left: 5px solid #ffc107;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+.card-producto:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
-/*espacio dentro de la tarjeta del carrito*/
-#contenedor-carrito .card-body{
+
+/* Imágenes que reemplazan los antiguos emojis */
+.icono-producto {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.icono-img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+
+.icono-img-sm {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    vertical-align: -5px;
+    margin-right: 8px;
+}
+
+.icono-hero {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    margin: 4px 6px;
+}
+
+/* Estilo de las tarjetas que muestran los productos del carrito */
+#contenedor-carrito .card {
+    border: none;
+    border-left: 5px solid var(--color-secundario);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+}
+
+/* espacio dentro de la tarjeta del carrito */
+#contenedor-carrito .card-body {
     padding: 20px;
 }
-/*Estilo de el nombre del producto dentro de la tarjeta del carrito*/
-#contenedor-carrito h5{
+
+/* Estilo de el nombre del producto dentro de la tarjeta del carrito */
+#contenedor-carrito h5 {
     font-weight: bold;
-    color: #212529;
+    color: var(--color-texto);
 }
 
-/*Hace mas visible el texto del boton rojo*/
-.btn-danger{
+/* Hace mas visible el texto del boton rojo */
+.btn-danger {
     font-weight: bold;
 }
 
-/*Estilo de la tarjeta que muestra el resumen del carrito*/
-.resumen-carrito{
-    border:none;
+/* Estilo de la tarjeta que muestra el resumen del carrito */
+.resumen-carrito {
+    border: none;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
 }
 
-/*Alinea el contenido de la tarjeta del resumen del carrito a la derecha*/
-.resumen-carrito .card-body{
+/* Alinea el contenido de la tarjeta del resumen del carrito a la derecha */
+.resumen-carrito .card-body {
     text-align: right;
 }
 
-/*Estilo del título de la tarjeta del total del carrito*/
-.resumen-carrito h3{
+/* Estilo del título de la tarjeta del total del carrito */
+.resumen-carrito h3 {
     font-weight: bold;
-    color: #212529;
+    color: var(--color-texto);
 }
 
-/*destaca el valor total de la compra*/
-#total-carrito{
+/* destaca el valor total de la compra */
+#total-carrito {
     font-weight: bold;
-    color: #d39e00;
+    color: var(--color-primario);
     font-size: 1.5rem;
 }
 
-/* Fondo claro para la sección Hero de la página principal */
-.hero-ferreteria {
-    background-color: #fdece0;
+/* Aviso que aparece en el carrito cuando se intenta comprar sin sesión iniciada */
+.alert-aviso-sesion {
+    border-left: 5px solid var(--color-primario);
 }
 
-/* Fondo oscuro para el cartel final de la página principal */
-.cta-ferreteria {
-    background-color: #23262b;
+/* Contador de productos junto al link "Carrito" del menú */
+.badge-carrito {
+    display: inline-block;
+    background-color: var(--color-primario);
     color: #ffffff;
+    border-radius: 50px;
+    padding: 1px 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Fondo claro (con degradé suave) para la sección Hero de la página principal */
+.hero-ferreteria {
+    background: linear-gradient(135deg, #fff6ec, #ffe4c7);
+}
+
+/* Cartel final de la página principal, ahora en tonos claros */
+.cta-ferreteria {
+    background-color: var(--color-fondo-alt);
+    color: var(--color-texto);
+    border: 1px solid var(--color-borde);
+}
+
+/* Menú lateral del panel de administración, en tonos claros */
+.admin-sidebar {
+    background-color: #fff3e6;
+    border-right: 1px solid var(--color-borde);
+    min-height: 100vh;
+}
+
+.admin-sidebar-titulo {
+    color: var(--color-primario);
+    font-weight: 700;
+}
+
+.admin-sidebar-subtitulo {
+    color: #a98a6f;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+.admin-link {
+    color: var(--color-texto);
+}
+
+.admin-link:hover {
+    color: var(--color-primario);
+}
+
+.admin-link-activo {
+    color: var(--color-primario) !important;
+    font-weight: 700;
+}
+
+/* Encabezado de las tablas del panel de administración (antes era table-dark) */
+.tabla-header-ferreteria th {
+    background-color: #ffe3cc;
+    color: var(--color-texto);
+    border-bottom: 2px solid var(--color-primario);
+}
+
+/* Pie de página */
+.footer-ferreteria {
+    background-color: #ffffff;
+    border-top: 1px solid var(--color-borde);
+    color: var(--color-texto);
+}
+
+.footer-link {
+    color: var(--color-texto);
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: var(--color-primario);
 }
