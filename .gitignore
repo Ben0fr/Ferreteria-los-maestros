@@ -1,0 +1,8 @@
+# Configuración local de herramientas / IDE (no es parte del proyecto)
+.ai/
+.idea/
+
+# Archivos comprimidos sueltos (respaldos, exportaciones, etc.)
+*.rar
+*.zip
+*.7z
