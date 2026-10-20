@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - Ferretería Los Maestros</title>
+
+    <!-- Bootstrap: diseño responsive y componentes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- CSS propio del proyecto -->
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+<!-- MENÚ PRINCIPAL -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+
+        <!-- Logo/nombre de la tienda -->
+        <a class="navbar-brand" href="index.html">Ferretería Los Maestros</a>
+
+        <!-- Botón del menú responsive en pantallas pequeñas -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Enlaces de navegación -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Inicio</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="productos.html">Productos</a>
+                </li>
+
+                <!-- active indica la página actual -->
+                <li class="nav-item">
+                    <a class="nav-link active" href="nosotros.html">Nosotros</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="contacto.html">Contacto</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="carrito.html">Carrito</a>
+                </li>
+
+                <!-- Se muestran cuando NO hay sesión -->
+                <li class="nav-item ms-lg-2" id="nav-login">
+                    <a class="btn btn-outline-primary btn-sm" href="login.html">Iniciar Sesión</a>
+                </li>
+
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0" id="nav-registro">
+                    <a class="btn btn-primary btn-sm" href="registro.html">Registrarse</a>
+                </li>
+
+                <!-- Se muestran cuando SÍ hay sesión -->
+                <li class="nav-item ms-lg-3 d-none" id="nav-usuario">
+                    <span class="fw-bold" id="nav-usuario-nombre"></span>
+                </li>
+
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0 d-none" id="nav-logout">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cerrarSesion()">Cerrar sesión</button>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ENCABEZADO DE LA PÁGINA -->
+<div class="hero-ferreteria mb-5">
+    <div class="container py-5 text-center">
+        <h1 class="display-4 fw-bold">Sobre Nosotros</h1>
+        <p class="fs-5 text-muted">
+            Más de 20 años acompañando a los maestros y familias en sus proyectos de construcción y hogar.
+        </p>
+    </div>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container mb-5">
+
+    <!-- Historia de la empresa -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <h2>Nuestra Historia</h2>
+            <p>Ferretería Los Maestros nació con el compromiso de ofrecer herramientas de calidad, materiales resistentes y la mejor atención técnica de la zona.</p>
+            <p>Nos enorgullece trabajar de la mano con maestros constructores, hobbistas y empresas locales para llevar cada proyecto al éxito.</p>
+        </div>
+
+        <!-- Elemento visual -->
+        <div class="col-md-6 text-center">
+            <div class="p-5 bg-light rounded border">
+                <span class="fs-1">🏗️ 🏠 🛠️</span>
+                <p class="mt-2 text-muted fw-bold">Compromiso y Calidad Garantizada</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Valores de la empresa -->
+    <h2 class="text-center mb-4">Lo que nos define</h2>
+
+    <div class="row text-center mb-5">
+
+        <!-- Cada col-md-4 ocupa 4 de 12 columnas -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 p-3">
+                <div class="fs-1 text-primary">🤝</div>
+                <h5 class="card-title mt-2">Atención Personalizada</h5>
+                <p class="card-text text-muted">Asesoría técnica para seleccionar los materiales adecuados.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 p-3">
+                <div class="fs-1 text-primary">⚡</div>
+                <h5 class="card-title mt-2">Entrega Rápida</h5>
+                <p class="card-text text-muted">Despachos a domicilio y retiros prioritarios en tienda.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 p-3">
+                <div class="fs-1 text-primary">🛡️</div>
+                <h5 class="card-title mt-2">Garantía Directa</h5>
+                <p class="card-text text-muted">Todos nuestros productos cuentan con respaldo de fábrica.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Datos generales de la empresa -->
+    <div class="card bg-light border-0 p-4">
+        <h3 class="mb-4 text-center">Datos de la Empresa</h3>
+
+        <div class="row">
+
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5>📍 Dirección</h5>
+                <p class="text-muted mb-0">
+                    Av. Los Maestros 1234, Local 5<br>
+                    Santiago, Chile
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5>📞 Teléfonos</h5>
+                <p class="text-muted mb-0">
+                    Mesa Central: +56 2 2345 6789<br>
+                    Ventas WhatsApp: +56 9 8765 4321
+                </p>
+            </div>
+
+            <div class="col-md-4">
+                <h5>⏰ Horarios de Atención</h5>
+                <p class="text-muted mb-0">
+                    Lunes a Viernes: 08:00 - 18:30 hrs<br>
+                    Sábados: 09:00 - 14:00 hrs
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS: permite que funcione el menú responsive -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+<!-- JS propio: maneja sesión y menú -->
+<script src="js/app.js"></script>
+
+</body>
+</html>

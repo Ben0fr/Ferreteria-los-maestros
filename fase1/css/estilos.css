@@ -1,0 +1,134 @@
+/* ==========================================================
+   estilos.css - Ferretería Los Maestros
+   Paleta: SaaS Azul Limpio
+   ========================================================== */
+
+   
+/* ================= BOTONES ================= */
+
+
+/* Botón principal (Azul vivo) */
+.btn-primary {
+    background-color: #3B82F6 !important;
+    border-color: #3B82F6 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/* Hover del botón principal */
+.btn-primary:hover {
+    background-color: #2563EB !important;
+    border-color: #2563EB !important;
+    color: #ffffff !important;
+}
+
+/* Hace más visible el texto del botón eliminar */
+.btn-danger {
+    font-weight: bold;
+}
+
+/* Botón de Registro en Blanco con texto azul vivo y letra gruesa */
+#btn-registro,
+.btn-registro,
+form#form-registro button[type="submit"] {
+    background-color: #ffffff !important;
+    border: 2px solid #3B82F6 !important;
+    color: #3B82F6 !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+}
+
+#btn-registro:hover,
+.btn-registro:hover,
+form#form-registro button[type="submit"]:hover {
+    background-color: #EFF6FF !important;
+    border-color: #2563EB !important;
+    color: #2563EB !important;
+}
+
+
+/* ================= NAVBAR ================= */
+
+/* Barra de navegación superior en azul primario */
+.navbar {
+    background-color: #1D4ED8 !important;
+}
+
+/* Nombre de la ferretería y enlaces en texto blanco */
+.navbar-brand, 
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+
+/* ================= TARJETAS ================= */
+
+/* Separación entre tarjetas */
+.card {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+}
+
+
+/* ================= CARRITO ================= */
+
+/* Tarjetas de productos dentro del carrito */
+#contenedor-carrito .card {
+    border: none;
+    border-left: 5px solid #3B82F6;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+/* Espacio interior de las tarjetas */
+#contenedor-carrito .card-body {
+    padding: 20px;
+}
+
+/* Nombre de cada producto (Texto azul muy oscuro) */
+#contenedor-carrito h5 {
+    font-weight: bold;
+    color: #0F172A;
+}
+
+/* Tarjeta que contiene el resumen de la compra */
+.resumen-carrito {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+/* Alinea el resumen a la derecha */
+.resumen-carrito .card-body {
+    text-align: right;
+}
+
+/* Título del total */
+.resumen-carrito h3 {
+    font-weight: bold;
+    color: #0F172A;
+}
+
+/* Destaca el valor total de la compra */
+#total-carrito {
+    font-weight: bold;
+    color: #1D4ED8;
+    font-size: 1.5rem;
+}
+
+
+/* ================= PÁGINA PRINCIPAL ================= */
+
+/* Fondo de la sección principal o Hero (Fondo casi blanco) */
+.hero-ferreteria {
+    background-color: #F4F6F9;
+}
+
+/* Sección final de llamado a la acción / contacto (Azul muy oscuro) */
+.cta-ferreteria {
+    background-color: #0F172A;
+    color: #ffffff;
+}
