@@ -6,11 +6,10 @@ module.exports = function (config) {
       'karma-jasmine',
       'karma-edge-launcher',
       'karma-chrome-launcher',
-      'karma-coverage'
+      'karma-coverage',
+      'karma-jasmine-html-reporter'
     ],
     files: [
-      // served:false y watched:false son requeridos por karma-vite:
-      // es Vite quien sirve y transforma los archivos de prueba (JSX)
       { pattern: 'src/**/*.spec.jsx', type: 'module', watched: false, served: false },
       { pattern: 'src/**/*.spec.js', type: 'module', watched: false, served: false }
     ],
@@ -18,14 +17,16 @@ module.exports = function (config) {
       config: {
         server: { fs: { allow: ['.'] } }
       },
-      // Instrumentación de cobertura (vite-plugin-istanbul viene incluido en karma-vite)
       coverage: {
         include: ['src/**/*.{js,jsx}'],
         exclude: ['src/**/*.spec.{js,jsx}', 'src/main.jsx'],
         extension: ['.js', '.jsx']
       }
     },
-    reporters: ['progress', 'coverage'],
+    client: {
+      clearContext: false
+    },
+    reporters: ['progress', 'coverage', 'kjhtml'],
     coverageReporter: {
       dir: 'coverage/',
       subdir: '.',
@@ -35,7 +36,7 @@ module.exports = function (config) {
         { type: 'text' }
       ]
     },
-    browsers: ['Edge'],
-    singleRun: true
+    browsers: ['Chrome'],
+    singleRun: false
   });
 };

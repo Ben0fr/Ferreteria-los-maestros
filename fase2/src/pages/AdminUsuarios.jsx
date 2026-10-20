@@ -23,7 +23,7 @@ const AdminUsuarios = () => {
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h1>Administrar Usuarios</h1>
-                            <p className="text-muted">Listado de usuarios registrados en el sistema.</p>
+                            <p className="text-muted">Listado de usuarios registrados en el sistema. Los clientes se registran desde la tienda; aquí solo se crean vendedores y administradores.</p>
                         </div>
 
                         {/* Muestra u oculta el formulario */}
@@ -53,7 +53,7 @@ const AdminUsuarios = () => {
                             <tbody>
                                 {usuarios.map((usuario, i) => (
                                     <tr key={i}>
-                                        <td>{usuario.run}</td>
+                                        <td>{usuario.tipo === 'Cliente' ? '—' : usuario.run}</td>
                                         <td>{usuario.nombre}</td>
                                         <td>{usuario.correo}</td>
                                         <td>{usuario.tipo}</td>

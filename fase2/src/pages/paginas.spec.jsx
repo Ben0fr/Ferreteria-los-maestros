@@ -64,14 +64,14 @@ describe('Login', () => {
         expect(screen.getByText('PAGINA INICIO')).toBeTruthy()
     })
 
-    it('permite iniciar sesión como administrador y redirige al panel admin', () => {
+    it('permite iniciar sesión como administrador y redirige a la pantalla principal', () => {
         const alertSpy = spyOn(window, 'alert')
         render(
             <MemoryRouter initialEntries={['/login']}>
                 <SesionProvider>
                     <Routes>
                         <Route path="/login" element={<Login />} />
-                        <Route path="/admin" element={<div>PANEL ADMIN</div>} />
+                        <Route path="/" element={<div>PAGINA INICIO</div>} />
                     </Routes>
                 </SesionProvider>
             </MemoryRouter>
@@ -81,7 +81,7 @@ describe('Login', () => {
         fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'admin123' } })
         enviarFormulario('Ingresar')
         expect(alertSpy).toHaveBeenCalledWith('Bienvenido, Administrador')
-        expect(screen.getByText('PANEL ADMIN')).toBeTruthy()
+        expect(screen.getByText('PAGINA INICIO')).toBeTruthy()
     })
 })
 
@@ -206,7 +206,7 @@ describe('Carrito', () => {
         renderCarrito()
         expect(screen.getByText('Martillo Carpintero')).toBeTruthy()
         expect(screen.getByText('Saco de Cemento 25kg')).toBeTruthy()
-        expect(screen.getByText('Cantidad: 2')).toBeTruthy()
+        expect(screen.getByDisplayValue('2')).toBeTruthy()
     })
 
     it('calcula el total (2 x 6.990 + 5.490 = 19.470)', () => {

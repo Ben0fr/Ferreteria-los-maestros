@@ -1,10 +1,70 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
-    obtenerCarrito, eliminarDelCarrito, vaciarCarrito, buscarProductoPorId, realizarCompra
+    obtenerCarrito, eliminarDelCarrito, vaciarCarrito, buscarProductoPorId, realizarCompra,
+    actualizarCantidadCarrito
 } from '../servicios/tienda'
 import { formatearPrecio } from '../utils/validaciones'
 import { useSesion } from '../context/useSesion'
+
+// Selector de cantidad de un producto del carrito: se puede borrar y escribir de nuevo,
+// no deja superar el stock y, si queda en 0, el producto se elimina del carrito
+const CantidadCarrito = ({ producto, cantidad, onCambiar }) => {
+    const [texto, setTexto] = useState(String(cantidad))
+    const [aviso, setAviso] = useState("")
+
+    // Si la cantidad cambia desde afuera, se sincroniza el campo
+    useEffect(() => {
+        setTexto(String(cantidad))
+    }, [cantidad])
+
+    const manejarCambio = (e) => {
+        const crudo = e.target.value
+
+        if (crudo === "") {
+            setTexto("")
+            return
+        }
+
+        const valor = Math.floor(Number(crudo))
+        if (Number.isNaN(valor)) return
+
+        if (valor > producto.stock) {
+            setAviso(`Solo hay ${producto.stock} unidades disponibles`)
+            setTexto(String(producto.stock))
+            onCambiar(producto.id, producto.stock)
+            return
+        }
+
+        setAviso("")
+        setTexto(String(Math.max(valor, 0)))
+        onCambiar(producto.id, valor)
+    }
+
+    // Si deja el campo vacío, vuelve a la cantidad que tenía el carrito
+    const manejarBlur = () => {
+        if (texto === "") setTexto(String(cantidad))
+    }
+
+    return (
+        <div className="mb-2">
+            <div className="input-group input-group-sm" style={{ maxWidth: "180px" }}>
+                <label htmlFor={`carrito-cantidad-${producto.id}`} className="input-group-text">Cantidad</label>
+                <input
+                    type="number"
+                    id={`carrito-cantidad-${producto.id}`}
+                    className="form-control"
+                    min={0}
+                    max={producto.stock}
+                    value={texto}
+                    onChange={manejarCambio}
+                    onBlur={manejarBlur}
+                />
+            </div>
+            {aviso !== "" && <div className="text-danger small">{aviso}</div>}
+        </div>
+    )
+}
 
 // Carrito de compras (se guarda en localStorage, así no se pierde al recargar)
 const Carrito = () => {
@@ -16,6 +76,11 @@ const Carrito = () => {
     // Quita un producto del carrito
     const manejarEliminar = (id) => {
         setCarrito(eliminarDelCarrito(id))
+    }
+
+    // Cambia la cantidad de un producto (si queda en 0 se elimina; nunca supera el stock)
+    const manejarCambiarCantidad = (id, cantidad) => {
+        setCarrito(actualizarCantidadCarrito(id, cantidad).carrito)
     }
 
     // Vacía todo el carrito
@@ -87,7 +152,7 @@ const Carrito = () => {
                                 <div>
                                     <h5>{producto.nombre}</h5>
                                     <p>Precio: ${formatearPrecio(producto.precio)}</p>
-                                    <p>Cantidad: {cantidad}</p>
+                                    <CantidadCarrito producto={producto} cantidad={cantidad} onCambiar={manejarCambiarCantidad} />
                                     <p>Subtotal: ${formatearPrecio(subtotal)}</p>
                                     <button
                                         type="button"

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Modal } from 'react-bootstrap'
 import AdminSidebar from '../components/organisms/AdminSidebar'
 import { categoriasAdmin } from '../data/productos'
 import {
@@ -16,6 +17,10 @@ const AdminProductos = () => {
     const [productos, setProductos] = useState(() => obtenerProductosAdmin())
     const [mostrarForm, setMostrarForm] = useState(false)
     const [datos, setDatos] = useState(formularioVacio)
+
+    // Edición: indice del producto que se está editando (null = modal cerrado) y sus datos
+    const [indiceEdicion, setIndiceEdicion] = useState(null)
+    const [datosEdicion, setDatosEdicion] = useState(formularioVacio)
 
     // Actualiza el campo que el usuario está escribiendo
     const manejarCambio = (e) => {
@@ -56,6 +61,8 @@ const AdminProductos = () => {
             codigo: datos.codigo.trim(),
             nombre: datos.nombre,
             categoria: datos.categoria,
+            descripcion: datos.descripcion,
+            stockCritico: datos.stockCritico === "" ? null : Number(datos.stockCritico),
             precio: precio,
             stock: stock
         }
@@ -70,42 +77,65 @@ const AdminProductos = () => {
         }
     }
 
-    // Edita un producto pidiendo los datos nuevos con ventanas (prompt)
-    const editarProducto = (indice) => {
-        const producto = productos[indice]
+    // Abre el cuadro de edición con todos los datos actuales del producto
+    const abrirEdicion = (indice) => {
+        const p = productos[indice]
+        setDatosEdicion({
+            codigo: p.codigo,
+            nombre: p.nombre,
+            descripcion: p.descripcion ?? "",
+            precio: String(p.precio),
+            stock: String(p.stock),
+            stockCritico: p.stockCritico === null || p.stockCritico === undefined ? "" : String(p.stockCritico),
+            categoria: p.categoria
+        })
+        setIndiceEdicion(indice)
+    }
 
-        const nuevoNombre = prompt("Nombre del producto:", producto.nombre)
-        if (nuevoNombre === null) return
+    const cerrarEdicion = () => setIndiceEdicion(null)
 
-        const nuevaCategoria = prompt("Categoría:", producto.categoria)
-        if (nuevaCategoria === null) return
+    const manejarCambioEdicion = (e) => {
+        setDatosEdicion({ ...datosEdicion, [e.target.name]: e.target.value })
+    }
 
-        const nuevoPrecio = prompt("Precio:", producto.precio)
-        if (nuevoPrecio === null) return
+    // Valida y guarda todos los datos modificados de una vez
+    const guardarEdicion = (e) => {
+        e.preventDefault()
 
-        const nuevoStock = prompt("Stock:", producto.stock)
-        if (nuevoStock === null) return
+        const precio = Number(datosEdicion.precio)
+        const stock = Number(datosEdicion.stock)
+        const stockCritico = datosEdicion.stockCritico === "" ? null : Number(datosEdicion.stockCritico)
 
-        const precioNumero = Number(nuevoPrecio)
-        const stockNumero = Number(nuevoStock)
-
-        // Revisa que los datos sean válidos antes de guardar
-        if (
-            nuevoNombre.trim() === "" ||
-            Number.isNaN(precioNumero) || precioNumero < 0 ||
-            !Number.isInteger(stockNumero) || stockNumero < 0
-        ) {
-            alert("Los datos ingresados no son válidos")
+        if (datosEdicion.nombre.trim() === "" || datosEdicion.categoria === "" ||
+            datosEdicion.precio === "" || datosEdicion.stock === "") {
+            alert("Completa los campos obligatorios")
             return
         }
 
-        setProductos([...editarProductoAdmin(indice, {
-            nombre: nuevoNombre,
-            categoria: nuevaCategoria,
-            precio: precioNumero,
-            stock: stockNumero
+        if (Number.isNaN(precio) || precio < 0 || !Number.isInteger(stock) || stock < 0) {
+            alert("El precio y el stock deben ser números válidos (stock entero, desde 0)")
+            return
+        }
+
+        if (stockCritico !== null && (!Number.isInteger(stockCritico) || stockCritico < 0)) {
+            alert("El stock crítico debe ser un número entero desde 0")
+            return
+        }
+
+        setProductos([...editarProductoAdmin(indiceEdicion, {
+            nombre: datosEdicion.nombre,
+            categoria: datosEdicion.categoria,
+            descripcion: datosEdicion.descripcion,
+            stockCritico: stockCritico,
+            precio: precio,
+            stock: stock
         })])
+        cerrarEdicion()
         alert("Producto modificado correctamente")
+
+        if (stockCritico !== null && stock <= stockCritico) {
+            alert("Atención: el stock de este producto está en nivel crítico")
+        }
     }
 
     // Elimina un producto (pide confirmación antes)
@@ -237,7 +267,7 @@ const AdminProductos = () => {
                                         <td>${formatearPrecio(producto.precio)}</td>
                                         <td>{producto.stock}</td>
                                         <td>
-                                            <button className="btn btn-sm btn-warning me-1" onClick={() => editarProducto(i)}>
+                                            <button className="btn btn-sm btn-warning me-1" onClick={() => abrirEdicion(i)}>
                                                 Editar
                                             </button>
                                             <button className="btn btn-sm btn-danger" onClick={() => eliminarProducto(i)}>
@@ -251,6 +281,73 @@ const AdminProductos = () => {
                     </div>
                 </main>
             </div>
+            {/* Cuadro para modificar todos los datos del producto de una vez */}
+            <Modal show={indiceEdicion !== null} onHide={cerrarEdicion} centered size="lg">
+                <form onSubmit={guardarEdicion}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Modificar producto</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label htmlFor="editar-producto-codigo" className="form-label">Código</label>
+                                <input type="text" className="form-control" id="editar-producto-codigo"
+                                       value={datosEdicion.codigo} disabled readOnly />
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <label htmlFor="editar-producto-nombre" className="form-label">Nombre</label>
+                                <input type="text" className="form-control" id="editar-producto-nombre"
+                                       name="nombre" maxLength={100} value={datosEdicion.nombre}
+                                       onChange={manejarCambioEdicion} required />
+                            </div>
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="editar-producto-descripcion" className="form-label">Descripción</label>
+                            <textarea className="form-control" id="editar-producto-descripcion"
+                                      name="descripcion" maxLength={500} rows={3}
+                                      value={datosEdicion.descripcion} onChange={manejarCambioEdicion}></textarea>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-md-4 mb-3">
+                                <label htmlFor="editar-producto-precio" className="form-label">Precio</label>
+                                <input type="number" className="form-control" id="editar-producto-precio"
+                                       name="precio" min={0} step={0.01} value={datosEdicion.precio}
+                                       onChange={manejarCambioEdicion} required />
+                            </div>
+                            <div className="col-md-4 mb-3">
+                                <label htmlFor="editar-producto-stock" className="form-label">Stock</label>
+                                <input type="number" className="form-control" id="editar-producto-stock"
+                                       name="stock" min={0} step={1} value={datosEdicion.stock}
+                                       onChange={manejarCambioEdicion} required />
+                            </div>
+                            <div className="col-md-4 mb-3">
+                                <label htmlFor="editar-producto-stock-critico" className="form-label">Stock crítico</label>
+                                <input type="number" className="form-control" id="editar-producto-stock-critico"
+                                       name="stockCritico" min={0} step={1} value={datosEdicion.stockCritico}
+                                       onChange={manejarCambioEdicion} />
+                            </div>
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="editar-producto-categoria" className="form-label">Categoría</label>
+                            <select className="form-select" id="editar-producto-categoria"
+                                    name="categoria" value={datosEdicion.categoria}
+                                    onChange={manejarCambioEdicion} required>
+                                <option value="">Seleccionar</option>
+                                {[...new Set([...categoriasAdmin, datosEdicion.categoria].filter(Boolean))].map((categoria) => (
+                                    <option key={categoria} value={categoria}>{categoria}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type="button" className="btn btn-secondary" onClick={cerrarEdicion}>Cancelar</button>
+                        <button type="submit" className="btn btn-primary">Guardar cambios</button>
+                    </Modal.Footer>
+                </form>
+            </Modal>
         </div>
     )
 }

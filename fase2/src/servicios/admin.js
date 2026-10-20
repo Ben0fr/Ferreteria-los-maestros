@@ -79,7 +79,7 @@ export function obtenerUsuariosAdmin() {
         // Usuarios iniciales de ejemplo
         usuariosAdmin = [
             { run: "19011022K", nombre: "Administrador", correo: "admin@gmail.com", tipo: "Administrador" },
-            { run: "201234567", nombre: "Juan Pérez", correo: "juan@gmail.com", tipo: "Cliente" },
+            { nombre: "Juan Pérez", correo: "juan@gmail.com", tipo: "Cliente" },
             { run: "189876543", nombre: "María González", correo: "maria@duoc.cl", tipo: "Vendedor" }
         ]
     }
@@ -92,7 +92,6 @@ export function obtenerUsuariosAdmin() {
 
         if (!yaExiste) {
             usuariosAdmin.push({
-                run: "-",
                 nombre: usuarioTienda.nombre,
                 correo: usuarioTienda.correo,
                 tipo: "Cliente"
@@ -105,7 +104,12 @@ export function obtenerUsuariosAdmin() {
 }
 
 // Agrega un usuario nuevo creado desde el panel del administrador
+// Desde el panel solo se pueden crear vendedores y administradores (los clientes se registran solos)
 export function crearUsuarioAdmin(usuario) {
+    if (usuario.tipo === "Cliente") {
+        throw new Error("Los clientes se registran desde la tienda; aquí solo se crean vendedores y administradores")
+    }
+
     const usuarios = obtenerUsuariosAdmin()
     usuarios.push(usuario)
     guardarJSON(CLAVE_USUARIOS_ADMIN, usuarios)

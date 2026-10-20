@@ -108,7 +108,6 @@ const UserForm = ({ onGuardar }) => {
                                     value={datos.tipo} onChange={manejarCambio} required>
                                 <option value="">Seleccionar</option>
                                 <option value="Administrador">Administrador</option>
-                                <option value="Cliente">Cliente</option>
                                 <option value="Vendedor">Vendedor</option>
                             </select>
                         </div>

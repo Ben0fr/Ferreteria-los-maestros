@@ -98,6 +98,61 @@ export function agregarAlCarrito(id, cantidad = 1) {
     notificarCarrito()
 }
 
+// Cantidad de un producto que ya hay en el carrito (0 si no está)
+export function cantidadEnCarrito(id) {
+    const item = obtenerCarrito().find((i) => i.id === id)
+    return item ? item.cantidad : 0
+}
+
+// Igual que agregarAlCarrito, pero valida el stock: no deja que lo del carrito + lo nuevo supere el stock.
+// Devuelve { ok, mensaje }
+export function agregarAlCarritoValidado(id, cantidad = 1) {
+    const producto = buscarProductoPorId(id)
+
+    if (producto === undefined) {
+        return { ok: false, mensaje: "El producto ya no existe" }
+    }
+
+    if (!Number.isInteger(cantidad) || cantidad < 1) {
+        return { ok: false, mensaje: "La cantidad debe ser al menos 1" }
+    }
+
+    const enCarrito = cantidadEnCarrito(id)
+
+    if (enCarrito + cantidad > producto.stock) {
+        const disponibles = Math.max(producto.stock - enCarrito, 0)
+        return {
+            ok: false,
+            mensaje: `No puedes superar el stock de ${producto.nombre} (${producto.stock} unidades). ` +
+                `Ya tienes ${enCarrito} en el carrito y puedes agregar ${disponibles} más.`
+        }
+    }
+
+    agregarAlCarrito(id, cantidad)
+    return { ok: true, mensaje: "Producto agregado al carrito" }
+}
+
+// Cambia la cantidad de un producto del carrito. Si es 0 (o menos) lo elimina; nunca supera el stock.
+// Devuelve { carrito, mensaje } (mensaje vacío si no hubo ajuste)
+export function actualizarCantidadCarrito(id, cantidad) {
+    if (cantidad <= 0) {
+        return { carrito: eliminarDelCarrito(id), mensaje: "" }
+    }
+
+    const producto = buscarProductoPorId(id)
+    let mensaje = ""
+
+    if (producto !== undefined && cantidad > producto.stock) {
+        cantidad = producto.stock
+        mensaje = `Solo hay ${producto.stock} unidades disponibles de ${producto.nombre}`
+    }
+
+    const carrito = obtenerCarrito().map((i) => (i.id === id ? { ...i, cantidad } : i))
+    guardarJSON(CLAVE_CARRITO, carrito)
+    notificarCarrito()
+    return { carrito, mensaje }
+}
+
 // Quita del carrito el producto con ese id y devuelve el carrito nuevo
 export function eliminarDelCarrito(id) {
     const carritoNuevo = obtenerCarrito().filter((i) => i.id !== id)

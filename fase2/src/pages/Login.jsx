@@ -43,7 +43,7 @@ const Login = () => {
 
             iniciarSesion(administrador)
             alert("Bienvenido, " + administrador.nombre)
-            navigate('/admin')
+            navigate('/')
             return
         }
 
