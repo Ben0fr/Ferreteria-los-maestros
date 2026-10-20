@@ -1,3 +1,15 @@
+const fs = require('fs');
+
+// Edge (basado en Chromium) se lanza con karma-chrome-launcher apuntando a su ejecutable
+const rutasEdge = [
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe'
+];
+if (!process.env.CHROME_BIN) {
+  const rutaEdge = rutasEdge.find((ruta) => fs.existsSync(ruta));
+  if (rutaEdge) process.env.CHROME_BIN = rutaEdge;
+}
+
 module.exports = function (config) {
   config.set({
     frameworks: ['vite', 'jasmine'],
@@ -36,7 +48,11 @@ module.exports = function (config) {
         { type: 'text' }
       ]
     },
-    browsers: ['Chrome'],
+    customLaunchers: {
+      EdgeChromium: { base: 'Chrome' },
+      EdgeChromiumHeadless: { base: 'ChromeHeadless' }
+    },
+    browsers: ['EdgeChromium'],
     singleRun: false
   });
 };
